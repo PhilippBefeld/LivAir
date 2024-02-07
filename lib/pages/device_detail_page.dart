@@ -671,12 +671,12 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 height: 20,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
                       border: Border(
-                        bottom: BorderSide(color: device.values.elementAt(0).isOnline ? Color(0xffA5E658)  : Colors.grey,),
-                        top: BorderSide(color: device.values.elementAt(0).isOnline ? Color(0xffA5E658)  : Colors.grey),
-                        right: BorderSide(color: device.values.elementAt(0).isOnline ? Color(0xffA5E658)  : Colors.grey,),
-                        left: BorderSide(color: device.values.elementAt(0).isOnline ? Color(0xffA5E658)  : Colors.grey,),
+                        bottom: BorderSide(color: device.values.elementAt(0).isOnline ? const Color(0xffA5E658)  : Colors.grey,),
+                        top: BorderSide(color: device.values.elementAt(0).isOnline ? const Color(0xffA5E658)  : Colors.grey),
+                        right: BorderSide(color: device.values.elementAt(0).isOnline ? const Color(0xffA5E658)  : Colors.grey,),
+                        left: BorderSide(color: device.values.elementAt(0).isOnline ? const Color(0xffA5E658)  : Colors.grey,),
                       )
                   ),
                   child: Row(
@@ -686,7 +686,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       Text(
                         device.values.elementAt(0).isOnline ? "online" : "offline",
                         style: TextStyle(
-                          color: device.values.elementAt(0).isOnline ? Color(0xffA5E658)  : Colors.grey,
+                          color: device.values.elementAt(0).isOnline ? const Color(0xffA5E658)  : Colors.grey,
                           fontSize: 12,
                         ),
                       ),
@@ -785,33 +785,27 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${Duration(milliseconds: requestMsSinceEpoch-radonHistoryTimestamps.first.item1).inMinutes} "+AppLocalizations.of(context)!.minsAgo,
+                            "${Duration(milliseconds: requestMsSinceEpoch-radonHistoryTimestamps.first.item1).inMinutes} ${AppLocalizations.of(context)!.minsAgo}",
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400
                             ),
                           ),
-                          RichText(
-                              text: TextSpan(
-                                  text: "${radonHistoryTimestamps.first.item2} ",
-                                  style: TextStyle(
-                                      color: radonHistoryTimestamps.first.item2 > 50 ? radonHistoryTimestamps.first.item2 > 300 ? Color(0xfffd4c56) : Color(0xfffdca03) : Color(0xff0ace84),
-                                      fontSize: currentMaxValue > 9999 ? 20 : 32,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: unit == "Bq/m³" ? "Bq/m³": "pCi/L",
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400
-                                      ),
-                                    )
-                                  ]
-                              )
-                          )
+                          Text("${radonHistoryTimestamps.first.item2} ",
+                            style: TextStyle(
+                              color: radonHistoryTimestamps.first.item2 > 50 ? radonHistoryTimestamps.first.item2 > 300 ? const Color(0xfffd4c56) : const Color(0xfffdca03) : const Color(0xff0ace84),
+                              fontSize: currentMaxValue > 9999 ? 20 : 32,
+                              fontWeight: FontWeight.w600
+                            ),
+                          ),
+                          Text(unit == "Bq/m³" ? "Bq/m³": "pCi/L",
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400
+                            ),
+                          ),
                         ],
                       ),
                       Column(
@@ -829,18 +823,14 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                               text: TextSpan(
                                   text: "$currentAvgValue ",
                                   style: TextStyle(
-                                      color: currentAvgValue > 50 ? currentAvgValue > 300 ? Color(0xfffd4c56) : Color(0xfffdca03) : Color(0xff0ace84),
+                                      color: currentAvgValue > 50 ? currentAvgValue > 300 ? const Color(0xfffd4c56) : const Color(0xfffdca03) : const Color(0xff0ace84),
                                       fontSize: currentMaxValue > 9999 ? 20 : 32,
                                       fontWeight: FontWeight.w600
                                   ),
                                   children: [
                                     TextSpan(
                                       text: unit == "Bq/m³" ? "Bq/m³": "pCi/L",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400
-                                      ),
+                                      style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
                                     )
                                   ]
                               )
@@ -1140,7 +1130,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                               ),
                               drawBelowEverything: true,
                             ),
-                            leftTitles: AxisTitles(
+                            leftTitles: const AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 reservedSize: 50
@@ -1319,7 +1309,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       const SizedBox(width: 16,),
                       const ImageIcon(AssetImage('lib/images/lights.png')),
                       const SizedBox(width: 14,),
-                      Text(AppLocalizations.of(context)!.deviceLights,style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
+                      Text(AppLocalizations.of(context)!.deviceLights,style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
                     ],
                   ),
 
@@ -1371,10 +1361,10 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 16,),
-                      ImageIcon(AssetImage('lib/images/location.png')),
-                      SizedBox(width: 14,),
-                      Text(AppLocalizations.of(context)!.location,style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
+                      const SizedBox(width: 16,),
+                      const ImageIcon(AssetImage('lib/images/location.png')),
+                      const SizedBox(width: 14,),
+                      Text(AppLocalizations.of(context)!.location,style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
                     ],
                   ),
 
@@ -1475,9 +1465,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
               children: [
                 Text(
                   AppLocalizations.of(context)!.indicatorLights,
-                  style: TextStyle(
-                    fontSize: 12
-                  ),
+                  style: const TextStyle(fontSize: 12),
                 )
               ],
             ),
@@ -1486,9 +1474,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
               children: [
                 Text(
                   d_led_t ? AppLocalizations.of(context)!.on : AppLocalizations.of(context)!.off,
-                  style: const TextStyle(
-                      fontSize: 16
-                  ),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 Expanded(
                   child: Row(
@@ -1496,8 +1482,8 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                     children: [
                       Switch(
                         value: d_led_t,
-                        activeColor: Color(0xff0099F0),
-                        activeTrackColor: Color(0xffCCEBFC),
+                        activeColor: const Color(0xff0099F0),
+                        activeTrackColor: const Color(0xffCCEBFC),
                         inactiveTrackColor: Colors.grey,
                         inactiveThumbColor: Colors.white30,
                         onChanged: (value) async{
@@ -1574,7 +1560,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           });
                         },
                       ),
-                      SizedBox(width: 10,)
+                      const SizedBox(width: 10,)
                     ],
                   ),
                 ),
@@ -1630,11 +1616,11 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       onPressed: () {
                         displayType(1);
                       },
-                      style: OutlinedButton.styleFrom(backgroundColor: d_unit == 1 ?  Colors.white : Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
+                      style: OutlinedButton.styleFrom(backgroundColor: d_unit == 1 ?  Colors.white : const Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(AppLocalizations.of(context)!.time, style: TextStyle(color: d_unit == 1 ?  Color(0xff0099F0) : Colors.white),),
+                          Text(AppLocalizations.of(context)!.time, style: TextStyle(color: d_unit == 1 ?  const Color(0xff0099F0) : Colors.white),),
                         ],
                       )
                   ),
@@ -1753,7 +1739,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.connectToWifiT, style: TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.connectToWifiT, style: const TextStyle(color: Colors.black),),
           ],
         ),
       ),
@@ -2440,7 +2426,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     renameController.text = device.values.first.label!;
     await Future.delayed(const Duration(milliseconds: 100));
     AlertDialog alert = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.rename, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
+      title: Text(AppLocalizations.of(context)!.rename, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -2467,8 +2453,8 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
               Expanded(
                 child: OutlinedButton(
                   onPressed: renameDevice,
-                  style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0),minimumSize: Size(100, 50)),
-                  child: Text(AppLocalizations.of(context)!.rename,style: TextStyle(color: Colors.white)),
+                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
+                  child: Text(AppLocalizations.of(context)!.rename,style: const TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -2482,7 +2468,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                     Navigator.pop(context);
                   },
                   style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0),minimumSize: Size(100, 50)),
-                  child: Text(AppLocalizations.of(context)!.cancel,style: TextStyle(color: Colors.black)),
+                  child: Text(AppLocalizations.of(context)!.cancel,style: const TextStyle(color: Colors.black)),
                 ),
               ),
             ],
@@ -2526,7 +2512,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       screenIndex = 7;
                     });
                   },
-                  color: Color(0xff0099f0),
+                  color: const Color(0xff0099f0),
                   icon: const Icon(MaterialSymbols.add)
               ),
             ],
@@ -2663,7 +2649,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   ),
                 ),
                 const SizedBox(height: 36,),
-                Text("Invite Viewer"),
+                Text(AppLocalizations.of(context)!.inviteViewer),
                 const SizedBox(height: 36,),
                 TextField(
                   textAlign: TextAlign.start,
@@ -2751,7 +2737,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
         children: [
           Text(
             AppLocalizations.of(context)!.removeUserDialog,
-            style: TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 14),
           ),
           const SizedBox(height: 30,),
           Row(
@@ -2830,7 +2816,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
           color: Colors.black,
         ),
         backgroundColor: Colors.white,
-        title: Text(AppLocalizations.of(context)!.selectThresholdT,style: TextStyle(color: Colors.black),),
+        title: Text(AppLocalizations.of(context)!.selectThresholdT,style: const TextStyle(color: Colors.black),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -2903,7 +2889,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
           color: Colors.black,
         ),
         backgroundColor: Colors.white,
-        title: Text(AppLocalizations.of(context)!.selectDurationT,style: TextStyle(color: Colors.black),),
+        title: Text(AppLocalizations.of(context)!.selectDurationT,style: const TextStyle(color: Colors.black),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -2927,7 +2913,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                     });
                   },
                 ),
-                SizedBox(width: 20,),
+                const SizedBox(width: 20,),
               ],
             ),
             const SizedBox(height: 20),
@@ -2985,7 +2971,6 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
   }
 
   showDeviceInfoScreen(){
-    print(calibrationDate);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -3004,7 +2989,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.deviceInfoT,style: TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.deviceInfoT,style: const TextStyle(color: Colors.black),),
           ],
         ),
       ),
@@ -3014,16 +2999,16 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(AppLocalizations.of(context)!.deviceId),
-            SizedBox(height: 10,),
-            Text(device.values.first.name, style: TextStyle(fontWeight: FontWeight.w600),),
-            SizedBox(height: 20,),
+            const SizedBox(height: 10,),
+            Text(device.values.first.name, style: const TextStyle(fontWeight: FontWeight.w600),),
+            const SizedBox(height: 20,),
             Text(AppLocalizations.of(context)!.firmwareVersion),
-            SizedBox(height: 10,),
-            Text(firmwareVersion, style: TextStyle(fontWeight: FontWeight.w600),),
-            SizedBox(height: 20,),
+            const SizedBox(height: 10,),
+            Text(firmwareVersion, style: const TextStyle(fontWeight: FontWeight.w600),),
+            const SizedBox(height: 20,),
             Text(AppLocalizations.of(context)!.calibrationDate),
-            SizedBox(height: 10,),
-            Text(DateTime.fromMillisecondsSinceEpoch(calibrationDate).toIso8601String().split("T").first, style: TextStyle(fontWeight: FontWeight.w600),),
+            const SizedBox(height: 10,),
+            Text(DateTime.fromMillisecondsSinceEpoch(calibrationDate).toIso8601String().split("T").first, style: const TextStyle(fontWeight: FontWeight.w600),),
           ],
         ),
       ),
@@ -3033,7 +3018,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
   identifyDevice() async{
     await Future<void>.delayed( const Duration(milliseconds: 100));
     AlertDialog alert = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.identifying, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
+      title: Text(AppLocalizations.of(context)!.identifying, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -3078,7 +3063,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
   deleteDevice() async {
     await Future<void>.delayed( const Duration(milliseconds: 100));
     AlertDialog alert = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.deleteDev, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
+      title: Text(AppLocalizations.of(context)!.deleteDev, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -3132,7 +3117,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
 
   setPage(int index){
     switch(index) {
-      case 0: return Column();
+      case 0: return const Column();
       case 1: return deviceDetailScreen();
       case 2: return deviceSettingsScreen();
       case 20: return deviceLightsScreen();

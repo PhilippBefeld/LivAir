@@ -10,12 +10,7 @@ import 'l10n/l10n.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MVP(), // Wrap your app
-    ),
-  );
+  runApp(MVP()); // Wrap your app
 }
 
 class MVP extends StatefulWidget {
@@ -49,8 +44,7 @@ class MVPState extends State<MVP>{
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
       ),
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
+      locale: _locale,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

@@ -1,5 +1,4 @@
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,7 +23,7 @@ class MVP extends StatefulWidget {
 
 class MVPState extends State<MVP>{
 
-  Locale _locale = Locale('en');
+  Locale _locale = const Locale('en');
 
 
 
@@ -45,7 +44,7 @@ class MVPState extends State<MVP>{
         scaffoldBackgroundColor: Colors.white,
       ),
       locale: _locale,
-      localizationsDelegates: [
+      localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

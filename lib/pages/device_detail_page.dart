@@ -664,7 +664,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   });
                 },
               ),
-              Text(device.values.elementAt(0).label!=null ? device.values.elementAt(0).label!  : device.values.elementAt(0).name),
+              Text(device.values.elementAt(0).label!=null ? device.values.elementAt(0).label!  : device.values.elementAt(0).name, style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400)),
               const SizedBox(width: 10,),
               SizedBox(
                 width: 45,
@@ -787,7 +787,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           Text(
                             "${Duration(milliseconds: requestMsSinceEpoch-radonHistoryTimestamps.first.item1).inMinutes} ${AppLocalizations.of(context)!.minsAgo}",
                             style: const TextStyle(
-                                color: Colors.black,
+                                color: Color(0xff78909C),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400
                             ),
@@ -795,14 +795,14 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           Text("${radonHistoryTimestamps.first.item2} ",
                             style: TextStyle(
                               color: radonHistoryTimestamps.first.item2 > 50 ? radonHistoryTimestamps.first.item2 > 300 ? const Color(0xfffd4c56) : const Color(0xfffdca03) : const Color(0xff0ace84),
-                              fontSize: currentMaxValue > 9999 ? 20 : 32,
+                              fontSize: 32,
                               fontWeight: FontWeight.w600
                             ),
                           ),
                           Text(unit == "Bq/m³" ? "Bq/m³": "pCi/L",
                             style: const TextStyle(
                                 color: Colors.black,
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w400
                             ),
                           ),
@@ -814,27 +814,19 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           Text(
                             "Ø ${AppLocalizations.of(context)!.avgLast} $selectedNumberOfDays ${AppLocalizations.of(context)!.days}",
                             style: const TextStyle(
-                                color: Colors.black,
+                                color: Color(0xff78909C),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400
                             ),
                           ),
-                          RichText(
-                              text: TextSpan(
-                                  text: "$currentAvgValue ",
-                                  style: TextStyle(
-                                      color: currentAvgValue > 50 ? currentAvgValue > 300 ? const Color(0xfffd4c56) : const Color(0xfffdca03) : const Color(0xff0ace84),
-                                      fontSize: currentMaxValue > 9999 ? 20 : 32,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: unit == "Bq/m³" ? "Bq/m³": "pCi/L",
-                                      style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
-                                    )
-                                  ]
-                              )
+                          Text("$currentAvgValue ",
+                            style: TextStyle(
+                                color: currentAvgValue > 50 ? currentAvgValue > 300 ? const Color(0xfffd4c56) : const Color(0xfffdca03) : const Color(0xff0ace84),
+                                fontSize: 32,
+                                fontWeight: FontWeight.w600
+                            ),
                           ),
+                          Text(unit == "Bq/m³" ? "Bq/m³": "pCi/L", style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),),
                         ],
                       ),
                       Column(
@@ -843,32 +835,25 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           Text(
                             "Max. ${AppLocalizations.of(context)!.avgLast} $selectedNumberOfDays ${AppLocalizations.of(context)!.days}",
                             style: const TextStyle(
-                                color: Colors.black,
+                                color: Color(0xff78909C),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400
                             ),
                           ),
-                          RichText(
-                              text: TextSpan(
-                                  text: "$currentMaxValue ",
-                                  style: TextStyle(
-                                      color: currentMaxValue > 50 ? currentMaxValue > 300 ? const Color(0xfffd4c56) : const Color(0xfffdca03) : const Color(0xff0ace84),
-                                      fontSize: currentMaxValue > 9999 ? 20 : 32,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: unit == "Bq/m³" ? "Bq/m³": "pCi/L",
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400
-                                      ),
-                                    )
-                                  ]
-                              )
+                          Text("$currentMaxValue ",
+                            style: TextStyle(
+                              color: currentMaxValue > 50 ? currentMaxValue > 300 ? const Color(0xfffd4c56) : const Color(0xfffdca03) : const Color(0xff0ace84),
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600
+                            ),
                           ),
-
+                          Text(unit == "Bq/m³" ? "Bq/m³": "pCi/L",
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400
+                            ),
+                          )
                         ],
                       ),
                     ],
@@ -1013,143 +998,152 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   ),
                 ),
                 const SizedBox(height: 50),
-                SizedBox(
-                  width: 360,
-                  height: 500,
-                  child: GestureDetector(
-                    onPanEnd: (details) {
-                      // Swiping in right direction.
-                      if (details.velocity.pixelsPerSecond.dx > 0) {
+                GestureDetector(
+                  onPanEnd: (details) {
+                    // Swiping in right direction.
+                    if (details.velocity.pixelsPerSecond.dx > 0) {
+                      setState(() {
+                        stepsIntoPast += 1;
+                      });
+                    }
+
+                    // Swiping in left direction.
+                    if (details.velocity.pixelsPerSecond.dx < 0) {
+                      if(stepsIntoPast>1){
                         setState(() {
-                          stepsIntoPast += 1;
+                          stepsIntoPast -= 1;
                         });
                       }
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: AspectRatio(
+                          aspectRatio:0.8,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                            child: LineChart(
+                              LineChartData(
+                                  maxX: selectedNumberOfDays == 0 ? (Duration(milliseconds: requestMsSinceEpoch - radonHistoryTimestamps.last.item1).inMinutes).toDouble() : 24,
+                                  maxY: (currentMaxValue/100.0).ceil()*100.0,
+                                  gridData: FlGridData(
+                                      show: true,
+                                      getDrawingVerticalLine: (value){
+                                        return const FlLine(
+                                            color: Color(0x00eceff1),
+                                            strokeWidth: 1
+                                        );
+                                      }
+                                  ),
+                                  lineBarsData: [
+                                    LineChartBarData(
+                                      spots: getCurrentSpots(),
+                                      isCurved: true,
+                                      curveSmoothness: 0.1,
+                                      preventCurveOverShooting: true,
+                                      dotData: const FlDotData(
+                                          show: false
+                                      ),
+                                      /*gradient: LinearGradient(
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                          colors: currentMaxValue>300 ? [
+                                            Colors.green,
+                                            Colors.green,
+                                            Colors.orange,
+                                            Colors.orange,
+                                            Colors.red,
+                                            Colors.red,
+                                          ] : currentMaxValue>50 ?[
+                                            Colors.green,
+                                            Colors.green,
+                                            Colors.orange,
+                                            Colors.orange,
 
-                      // Swiping in left direction.
-                      if (details.velocity.pixelsPerSecond.dx < 0) {
-                        if(stepsIntoPast>1){
-                          setState(() {
-                            stepsIntoPast -= 1;
-                          });
-                        }
-                      }
-                    },
-                    child: LineChart(
-                      LineChartData(
-                          maxX: selectedNumberOfDays == 0 ? (Duration(milliseconds: requestMsSinceEpoch - radonHistoryTimestamps.last.item1).inMinutes).toDouble() : 24,
-                          maxY: (currentMaxValue/100.0).ceil()*100.0,
-                          gridData: FlGridData(
-                              show: true,
-                              getDrawingVerticalLine: (value){
-                                return const FlLine(
-                                    color: Color(0x00eceff1),
-                                    strokeWidth: 1
-                                );
-                              }
-                          ),
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: getCurrentSpots(),
-                              isCurved: true,
-                              curveSmoothness: 0.1,
-                              preventCurveOverShooting: true,
-                              dotData: const FlDotData(
-                                  show: false
-                              ),
-                              /*gradient: LinearGradient(
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                  colors: currentMaxValue>300 ? [
-                                    Colors.green,
-                                    Colors.green,
-                                    Colors.orange,
-                                    Colors.orange,
-                                    Colors.red,
-                                    Colors.red,
-                                  ] : currentMaxValue>50 ?[
-                                    Colors.green,
-                                    Colors.green,
-                                    Colors.orange,
-                                    Colors.orange,
+                                          ] : [
+                                            Colors.green,
+                                            Colors.green,
 
-                                  ] : [
-                                    Colors.green,
-                                    Colors.green,
-
+                                          ],
+                                          stops: currentMaxValue>300 ?[0, 50<currentMaxValue ? 45.0/currentMaxValue : 1.0, 50<currentMaxValue ? 55.0/currentMaxValue : 1.0, 300<currentMaxValue ? 295/currentMaxValue : 1.0, 300<currentMaxValue ? 305/currentMaxValue : 3.00,1.0]
+                                              : currentMaxValue>50 ?[0, 50<currentMaxValue ? 45.0/currentMaxValue : 1.0, 50<currentMaxValue ? 55.0/currentMaxValue : 1.0, 300<currentMaxValue ? 295/currentMaxValue : 1.0]
+                                              :[0, 50<currentMaxValue ? 45.0/currentMaxValue : 1.0]
+                                      ),*/
+                                    ),
                                   ],
-                                  stops: currentMaxValue>300 ?[0, 50<currentMaxValue ? 45.0/currentMaxValue : 1.0, 50<currentMaxValue ? 55.0/currentMaxValue : 1.0, 300<currentMaxValue ? 295/currentMaxValue : 1.0, 300<currentMaxValue ? 305/currentMaxValue : 3.00,1.0]
-                                      : currentMaxValue>50 ?[0, 50<currentMaxValue ? 45.0/currentMaxValue : 1.0, 50<currentMaxValue ? 55.0/currentMaxValue : 1.0, 300<currentMaxValue ? 295/currentMaxValue : 1.0]
-                                      :[0, 50<currentMaxValue ? 45.0/currentMaxValue : 1.0]
-                              ),*/
-                            ),
-                          ],
-                          lineTouchData: LineTouchData(
-                            enabled: true,
-                            getTouchedSpotIndicator:
-                                (LineChartBarData barData, List<int> spotIndexes) {
-                              return spotIndexes.map((index) {
-                                return TouchedSpotIndicatorData(
-                                  const FlLine(
-                                    strokeWidth: 0,
-                                    color: Colors.pink,
+                                  lineTouchData: LineTouchData(
+                                    enabled: true,
+                                    getTouchedSpotIndicator:
+                                        (LineChartBarData barData, List<int> spotIndexes) {
+                                      return spotIndexes.map((index) {
+                                        return TouchedSpotIndicatorData(
+                                          const FlLine(
+                                            strokeWidth: 0,
+                                            color: Colors.pink,
+                                          ),
+                                          FlDotData(
+                                            show: true,
+                                            getDotPainter: (spot, percent, barData, index) =>
+                                                FlDotCirclePainter(
+                                                  radius: 8,
+                                                  color: spot.y > 50 ? spot.y > 300 ? Colors.red : Colors.orange : Colors.green,
+                                                  strokeWidth: 2,
+                                                  strokeColor: Colors.black,
+                                                ),
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
+                                    touchTooltipData: LineTouchTooltipData(
+                                      maxContentWidth: 100,
+                                      tooltipBgColor: Colors.white,
+                                      tooltipBorder: const BorderSide(color: Colors.black),
+                                      getTooltipItems: (touchedSpots) {
+                                        return touchedWidgets(touchedSpots);
+                                      },
+                                    ),
+                                    handleBuiltInTouches: true
                                   ),
-                                  FlDotData(
+                                  titlesData: FlTitlesData(
                                     show: true,
-                                    getDotPainter: (spot, percent, barData, index) =>
-                                        FlDotCirclePainter(
-                                          radius: 8,
-                                          color: spot.y > 50 ? spot.y > 300 ? Colors.red : Colors.orange : Colors.green,
-                                          strokeWidth: 2,
-                                          strokeColor: Colors.black,
-                                        ),
+                                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                    bottomTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: true,
+                                        getTitlesWidget: (value, meta) =>
+                                            bottomTitleWidgets(value, meta),
+                                        reservedSize: 56,
+                                        interval: selectedNumberOfDays == 0 ? (Duration(milliseconds: requestMsSinceEpoch - radonHistoryTimestamps.last.item1).inMinutes).toDouble()/4 : 6,
+                                      ),
+                                      drawBelowEverything: true,
+                                    ),
+                                    leftTitles: const AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: true,
+                                        reservedSize: 50
+                                      ),
+                                    )
                                   ),
-                                );
-                              }).toList();
-                            },
-                            touchTooltipData: LineTouchTooltipData(
-                              maxContentWidth: 100,
-                              tooltipBgColor: Colors.white,
-                              tooltipBorder: const BorderSide(color: Colors.black),
-                              getTooltipItems: (touchedSpots) {
-                                return touchedWidgets(touchedSpots);
-                              },
-                            ),
-                            handleBuiltInTouches: true
-                          ),
-                          titlesData: FlTitlesData(
-                            show: true,
-                            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, meta) =>
-                                    bottomTitleWidgets(value, meta),
-                                reservedSize: 56,
-                                interval: selectedNumberOfDays == 0 ? (Duration(milliseconds: requestMsSinceEpoch - radonHistoryTimestamps.last.item1).inMinutes).toDouble()/4 : 6,
+                                  borderData: FlBorderData(
+                                      show: false
+                                  ),
+                                  extraLinesData: ExtraLinesData(
+                                      horizontalLines: [
+                                        HorizontalLine(
+                                            y: currentAvgValue.toDouble(),
+                                            dashArray: [20,5]
+                                        )
+                                      ]
+                                  )
                               ),
-                              drawBelowEverything: true,
                             ),
-                            leftTitles: const AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                reservedSize: 50
-                              ),
-                            )
                           ),
-                          borderData: FlBorderData(
-                              show: false
-                          ),
-                          extraLinesData: ExtraLinesData(
-                              horizontalLines: [
-                                HorizontalLine(
-                                    y: currentAvgValue.toDouble(),
-                                    dashArray: [20,5]
-                                )
-                              ]
-                          )
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
 
@@ -1281,7 +1275,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.deviceSettingsT,style: const TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.deviceSettingsT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           ],
         ),
       ),
@@ -1452,7 +1446,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.deviceLightsT,style: const TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.deviceLightsT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           ],
         ),
       ),
@@ -1739,7 +1733,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.connectToWifiT, style: const TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.connectToWifiT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           ],
         ),
       ),
@@ -1813,7 +1807,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.connectToWifiT, style: TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.connectToWifiT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           ],
         ),
       ),
@@ -2192,7 +2186,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.exportDataT,style: const TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.exportDataT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           ],
         ),
         iconTheme: const IconThemeData(
@@ -2504,7 +2498,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
             iconTheme: const IconThemeData(
               color: Colors.black,
             ),
-            title: Text(AppLocalizations.of(context)!.manageUsersT, style: TextStyle(color: Colors.black),),
+            title: Text(AppLocalizations.of(context)!.manageUsersT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
             actions: [
               IconButton(
                   onPressed: (){
@@ -2816,7 +2810,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
           color: Colors.black,
         ),
         backgroundColor: Colors.white,
-        title: Text(AppLocalizations.of(context)!.selectThresholdT,style: const TextStyle(color: Colors.black),),
+        title: Text(AppLocalizations.of(context)!.selectThresholdT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -2889,7 +2883,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
           color: Colors.black,
         ),
         backgroundColor: Colors.white,
-        title: Text(AppLocalizations.of(context)!.selectDurationT,style: const TextStyle(color: Colors.black),),
+        title: Text(AppLocalizations.of(context)!.selectDurationT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -2989,7 +2983,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.deviceInfoT,style: const TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.deviceInfoT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           ],
         ),
       ),

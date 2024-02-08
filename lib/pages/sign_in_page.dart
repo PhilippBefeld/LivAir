@@ -90,7 +90,15 @@ class SignInPageState extends State<SignInPage> {
         if(languageData.data != "english"){
           MVP.of(context)!.setLocale(const Locale.fromSubtags(languageCode: 'de'));
         }
+        if(!await storage.containsKey(key: 'language')){
+          storage.write(key: 'language', value: languageData.data);
+        }else{
+          if(await storage.read(key: 'language') != languageData.data){
+            storage.write(key: 'language', value: languageData.data);
+          }
+        }
         var unitData = await dio.get('https://dashboard.livair.io/api/livAir/units',options: Options(responseType: ResponseType.plain));
+        print(languageData);
         if(!await storage.containsKey(key: 'unit')){
           storage.write(key: 'unit', value: unitData.data);
         }else{
@@ -232,6 +240,11 @@ class SignInPageState extends State<SignInPage> {
       if(await storage.containsKey(key: "autoSignIn")){
         logIn();
         return;
+      }
+      if(await storage.containsKey(key: "language")){
+        if(await storage.read(key: "language") != "english"){
+          MVP.of(context)!.setLocale(const Locale.fromSubtags(languageCode: 'de'));
+        }
       }
     }
     if(await storage.containsKey(key: "email")== false && credentialsLoaded == false){

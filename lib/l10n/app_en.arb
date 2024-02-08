@@ -200,5 +200,14 @@
     "termsOfService": "Terms of service",
     "privacyPolicy": "Privacy policy",
     "scanForCode": "Scan for code",
-    "autoSignIn": "Automatically sign in"
+    "autoSignIn": "Automatically sign in",
+    "notificationsT": "NOTIFICATIONS",
+    "upToDate": "You're up-to-date",
+    "deleteNotificationsQ": "Delete all notifications?",
+    "minutesAgo": "minutes ago",
+    "hoursAgo": "hours ago",
+    "daysAgo": "days ago",
+    "privacyPolicyyT": "PRIVACY POLICY",
+    "imprint": "Imprint",
+    "imprintT": "IMPRINT"
 }

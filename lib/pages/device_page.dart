@@ -368,7 +368,7 @@ class DevicePageState extends State<DevicePage> {
             });
           },
         ),
-        backgroundColor: const Color(0xffeff0f1),
+        backgroundColor: Colors.white,
         titleSpacing: 0,
         iconTheme: const IconThemeData(
           color: Colors.black,
@@ -464,7 +464,7 @@ class DevicePageState extends State<DevicePage> {
             });
           },
         ),
-        backgroundColor: const Color(0xffeff0f1),
+        backgroundColor: Colors.white,
         titleSpacing: 0,
         iconTheme: const IconThemeData(
           color: Colors.black,
@@ -570,12 +570,12 @@ class DevicePageState extends State<DevicePage> {
             });
           },
         ),
-        backgroundColor: const Color(0xffeff0f1),
+        backgroundColor: Colors.white,
         titleSpacing: 0,
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        title: Text(AppLocalizations.of(context)!.connectToWifiT, style: const TextStyle(color: Colors.black),),
+        title: Text(AppLocalizations.of(context)!.connectToWifiT,style: const TextStyle( fontSize: 20,fontWeight: FontWeight.w400),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -630,7 +630,7 @@ class DevicePageState extends State<DevicePage> {
   deviceWifiSelectScreen() {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffeff0f1),
+        backgroundColor: Colors.white,
         titleSpacing: 0,
         iconTheme: const IconThemeData(
           color: Colors.black,
@@ -645,7 +645,7 @@ class DevicePageState extends State<DevicePage> {
             });
           },
         ),
-        title: Text(AppLocalizations.of(context)!.connectToWifiT, style: const TextStyle(color: Colors.black),),
+        title: Text(AppLocalizations.of(context)!.connectToWifiT,style: const TextStyle( fontSize: 20,fontWeight: FontWeight.w400),),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -794,12 +794,12 @@ class DevicePageState extends State<DevicePage> {
             });
           },
         ),
-        backgroundColor: const Color(0xffeff0f1),
+        backgroundColor: Colors.white,
         titleSpacing: 0,
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        title: Text(AppLocalizations.of(context)!.visibleDevicesT, style: const TextStyle(color: Colors.black),),
+        title: Text(AppLocalizations.of(context)!.visibleDevicesT,style: const TextStyle( fontSize: 20,fontWeight: FontWeight.w400),),
       ),
       body: Column(
         children: [
@@ -883,9 +883,9 @@ class DevicePageState extends State<DevicePage> {
               iconTheme: const IconThemeData(
                 color: Colors.black,
               ),
-              backgroundColor: Color(0xffeff0f1),
+              backgroundColor: Colors.white,
               titleTextStyle: const TextStyle(color: Colors.black),
-              title: Text(AppLocalizations.of(context)!.addDevManuallyT,style: TextStyle( fontSize: 20,fontWeight: FontWeight.w500),),
+              title: Text(AppLocalizations.of(context)!.addDevManuallyT,style: const TextStyle( fontSize: 20,fontWeight: FontWeight.w400),),
             ),
             body: SafeArea(
               child: Center(
@@ -969,7 +969,7 @@ class DevicePageState extends State<DevicePage> {
                 ),
               ],
               elevation: 0,
-              title: Text(AppLocalizations.of(context)!.allDevicesT,style: const TextStyle( fontSize: 20,fontWeight: FontWeight.w500),),
+              title: Text(AppLocalizations.of(context)!.allDevicesT,style: const TextStyle( fontSize: 20,fontWeight: FontWeight.w400),),
               centerTitle: false,
             ),
             body: SafeArea(

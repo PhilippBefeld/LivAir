@@ -1,6 +1,5 @@
 
 import 'dart:convert';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -154,10 +153,10 @@ class NotificationsPageState extends State<NotificationsPage>{
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: const Color(0xffeff0f1),
+          backgroundColor: Colors.white,
           title: Row(
             children: [
-              Text("NOTIFICATIONS", style: TextStyle(color: Colors.black),),
+              Text(AppLocalizations.of(context)!.notificationsT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
             ],
           ),
           automaticallyImplyLeading: false,
@@ -171,7 +170,7 @@ class NotificationsPageState extends State<NotificationsPage>{
             children: [
               const Icon(Icons.circle_outlined,size: 70,),
               const SizedBox(height: 15,),
-              Text("You're up-to-date")
+              Text(AppLocalizations.of(context)!.upToDate)
             ],
           ),
         ),
@@ -181,8 +180,8 @@ class NotificationsPageState extends State<NotificationsPage>{
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xffeff0f1),
-          title: Text("NOTIFICATIONS", style: TextStyle(color: Colors.black),),
+          backgroundColor: Colors.white,
+          title: Text(AppLocalizations.of(context)!.notificationsT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           iconTheme: const IconThemeData(
             color: Colors.black,
           ),
@@ -190,7 +189,7 @@ class NotificationsPageState extends State<NotificationsPage>{
             IconButton(
                 onPressed: (){
                   AlertDialog alert = AlertDialog(
-                    title: Text("Delete all notifications?", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
+                    title: Text(AppLocalizations.of(context)!.deleteNotificationsQ, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -203,12 +202,12 @@ class NotificationsPageState extends State<NotificationsPage>{
                                     Navigator.pop(context);
                                   }),
                                   style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50), side: const BorderSide(color: Color(0xff0099f0))),
-                                  child: Text("Yes",style: const TextStyle(color: Color(0xff0099f0)),)
+                                  child: Text(AppLocalizations.of(context)!.contin,style: const TextStyle(color: Color(0xff0099f0)),)
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 20,),
+                        const SizedBox(height: 20,),
                         Row(
                           children: [
                             Expanded(
@@ -232,7 +231,7 @@ class NotificationsPageState extends State<NotificationsPage>{
                     },
                   );
                 },
-                icon: ImageIcon(AssetImage('lib/images/TrashbinButton.png'),)
+                icon: const ImageIcon(AssetImage('lib/images/TrashbinButton.png'),)
             ),
           ],
         ),
@@ -248,13 +247,13 @@ class NotificationsPageState extends State<NotificationsPage>{
                   Duration msSinceCreation = Duration(milliseconds: DateTime.now().subtract(Duration(milliseconds: msOnCreation)).millisecondsSinceEpoch);
                   String timeSinceCreation = "0 m";
                   if(msSinceCreation.inDays.toInt()!= 0){
-                    timeSinceCreation = "${msSinceCreation.inMinutes} minutes ago";
+                    timeSinceCreation = "${msSinceCreation.inMinutes} ${AppLocalizations.of(context)!.minutesAgo}";
                   }
                   if(msSinceCreation.inHours.toInt() !=0){
-                    timeSinceCreation = "${msSinceCreation.inHours} hours ago";
+                    timeSinceCreation = "${msSinceCreation.inHours} ${AppLocalizations.of(context)!.hoursAgo}";
                   }
                   if(msSinceCreation.inDays.toInt() !=0){
-                    timeSinceCreation = "${msSinceCreation.inDays} days ago";
+                    timeSinceCreation = "${msSinceCreation.inDays} ${AppLocalizations.of(context)!.daysAgo}";
                   }
                   Map<String,dynamic> test = notifications.elementAt(index);
                   Map<String,dynamic> test2 = jsonDecode(test["value"]);
@@ -360,7 +359,7 @@ class NotificationsPageState extends State<NotificationsPage>{
 
   Widget setScreen() {
     switch (index) {
-      case 0: return Center();
+      case 0: return const Center();
       case 1: return showNotificationsScreen();
       default:
         return showNotificationsScreen();

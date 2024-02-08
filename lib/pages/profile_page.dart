@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_material_symbols/flutter_material_symbols.dart';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:mvp/components/long_Strings/policy.dart';
+import 'package:mvp/components/long_Strings/imprint.dart';
 import 'package:thingsboard_pe_client/thingsboard_client.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -29,8 +30,9 @@ class ProfilePageState extends State<ProfilePage>{
   final Dio dio = Dio();
   final logger = Logger();
 
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   String? unit;
+  String? language;
 
 
   //screen control variables
@@ -69,7 +71,7 @@ class ProfilePageState extends State<ProfilePage>{
     if(!gotProfileData){
       gotProfileData = true;
       unit = await storage.read(key: 'unit');
-
+      language = await storage.read(key: "language");
       final token = tbClient.getJwtToken();
       dio.options.headers['content-Type'] = 'application/json';
       dio.options.headers['Accept'] = "application/json";
@@ -86,6 +88,8 @@ class ProfilePageState extends State<ProfilePage>{
       nameController.text = responseData["firstName"];
       name = responseData["firstName"];
       emailController.text = responseData["email"];
+      setState(() {
+      });
     }
   }
 
@@ -238,7 +242,7 @@ class ProfilePageState extends State<ProfilePage>{
               child: Container(
                 alignment: Alignment.centerLeft,
                 height: 100.0,
-                color: const Color(0xffeff0f1),
+                decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(1)),color: Colors.white,border: Border(bottom: BorderSide(color: Color(0xffb0bec5)))),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Row(
@@ -246,7 +250,7 @@ class ProfilePageState extends State<ProfilePage>{
                     children: [
                       Row(
                         children: [
-                          Text("${AppLocalizations.of(context)!.helloT} ${name.toUpperCase().split(" ")[0]}!",style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w500),),
+                          Text("${AppLocalizations.of(context)!.helloT} ${name.toUpperCase().split(" ")[0]}!",style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
                         ],
                       ),
                       Row(
@@ -312,7 +316,7 @@ class ProfilePageState extends State<ProfilePage>{
                     setState(() {
                       currentIndex = 2;
                       showAppBar = true;
-                      appBarTitle = "GENERAL SETTINGS";
+                      appBarTitle = AppLocalizations.of(context)!.generalSettingsT;
                     });
                   },
                   child: Container(
@@ -367,14 +371,44 @@ class ProfilePageState extends State<ProfilePage>{
                 ),
               ],
             ),
+            SizedBox(height: 70,),
             Column(
               children: [
                 GestureDetector(
                   onTap: (){
                     setState(() {
-                      currentIndex = 2;
+                      currentIndex = 10;
                       showAppBar = true;
-                      appBarTitle = "GENERAL SETTINGS";
+                      appBarTitle = AppLocalizations.of(context)!.imprintT;
+                    });
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(width: 1,color: Color(0xffb0bec5)),
+                        top: BorderSide(width: 1,color: Color(0xffb0bec5)),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            const SizedBox(width: 16,),
+                            const ImageIcon(AssetImage('lib/images/termsOfService.png')),
+                            const SizedBox(width: 14,),
+                            Text(AppLocalizations.of(context)!.imprint,style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    setState(() {
                     });
                   },
                   child: Container(
@@ -401,9 +435,9 @@ class ProfilePageState extends State<ProfilePage>{
                 GestureDetector(
                   onTap: (){
                     setState(() {
-                      currentIndex = 2;
+                      currentIndex = 9;
                       showAppBar = true;
-                      appBarTitle = "GENERAL SETTINGS";
+                      appBarTitle = AppLocalizations.of(context)!.privacyPolicyyT;
                     });
                   },
                   child: Container(
@@ -435,6 +469,14 @@ class ProfilePageState extends State<ProfilePage>{
     );
   }
 
+  showPolicyScreen(){
+    return PolicyText();
+  }
+
+  showImprintScreen(){
+    return ImprintText();
+  }
+
   showPersonalDataScreen() {
     return Container(
       padding: const EdgeInsets.all(20.0),
@@ -444,13 +486,13 @@ class ProfilePageState extends State<ProfilePage>{
           Container(
             child: Column(
               children: [
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 const Row(
                   children: [
                     Text("Name")
                   ],
                 ),
-                SizedBox(height: 5,),
+                const SizedBox(height: 5,),
                 Row(
                   children: [
                     Expanded(
@@ -647,14 +689,14 @@ class ProfilePageState extends State<ProfilePage>{
           },
           child: Container(
             height: 50.0,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(bottom: BorderSide(width: 1,color: Color(0xffb0bec5))),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
+                const Row(
                   children: [
                     SizedBox(width: 16,),
                     Text("English",style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
@@ -662,8 +704,8 @@ class ProfilePageState extends State<ProfilePage>{
                 ),
                 Row(
                   children: [
-                    ImageIcon(AssetImage('lib/images/ListButton_Circle.png')),
-                    SizedBox(width: 22,)
+                    Icon(language != "english" ? Icons.circle : Icons.circle_outlined,color: const Color(0xff0099f0),),
+                    const SizedBox(width: 22,)
                   ],
                 )
               ],
@@ -689,11 +731,11 @@ class ProfilePageState extends State<ProfilePage>{
             decoration: const BoxDecoration(
               border: Border(bottom: BorderSide(width: 1,color: Color(0xffb0bec5))),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
+                const Row(
                   children: [
                     SizedBox(width: 16,),
 
@@ -702,8 +744,8 @@ class ProfilePageState extends State<ProfilePage>{
                 ),
                 Row(
                   children: [
-                    ImageIcon(AssetImage('lib/images/ListButton_Circle.png')),
-                    SizedBox(width: 22,)
+                    Icon(language == "english" ? Icons.circle : Icons.circle_outlined,color: const Color(0xff0099f0),),
+                    const SizedBox(width: 22,)
                   ],
                 )
               ],
@@ -748,7 +790,7 @@ class ProfilePageState extends State<ProfilePage>{
                 ),
                 Row(
                   children: [
-                    Icon(unit == "Bq/m³" ? Icons.circle : Icons.circle_outlined),
+                    Icon(unit == "Bq/m³" ? Icons.circle : Icons.circle_outlined,color: const Color(0xff0099f0),),
                     const SizedBox(width: 22,)
                   ],
                 )
@@ -772,7 +814,7 @@ class ProfilePageState extends State<ProfilePage>{
           },
           child: Container(
             height: 50.0,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(bottom: BorderSide(width: 1,color: Color(0xffb0bec5))),
             ),
             child: Row(
@@ -788,7 +830,7 @@ class ProfilePageState extends State<ProfilePage>{
                 ),
                 Row(
                   children: [
-                    Icon(unit == "pCi/L" ? Icons.circle : Icons.circle_outlined),
+                    Icon(unit == "pCi/L" ? Icons.circle : Icons.circle_outlined,color: const Color(0xff0099f0),),
                     const SizedBox(width: 22,)
                   ],
                 )
@@ -1331,6 +1373,8 @@ class ProfilePageState extends State<ProfilePage>{
       case 6: return addViewerScreen();
       case 7: return manageViewerScreen();
       case 8: return showPasswordScreen();
+      case 9: return showPolicyScreen();
+      case 10: return showImprintScreen();
       default:
         return showProfilePageScreen();
     }
@@ -1341,10 +1385,8 @@ class ProfilePageState extends State<ProfilePage>{
     return FutureBuilder(
       future: getProfileData(),
       builder: (context,snapshot) {
-        return WillPopScope(
-          onWillPop: () async{
-            return false;
-          },
+        return PopScope(
+          canPop: false,
           child: Scaffold(
               appBar: showAppBar ? AppBar(
                 elevation: 0,
@@ -1352,7 +1394,7 @@ class ProfilePageState extends State<ProfilePage>{
                 iconTheme: const IconThemeData(
                   color: Colors.black,
                 ),
-                backgroundColor: const Color(0xffF7F9F9),
+                backgroundColor: Colors.white,
                 title: Row(
                   children: [
                     IconButton(
@@ -1369,7 +1411,7 @@ class ProfilePageState extends State<ProfilePage>{
                         }
                       },
                     ),
-                    Text(appBarTitle, style: const TextStyle(color: Colors.black),),
+                    Text(appBarTitle,style: const TextStyle( fontSize: 20,fontWeight: FontWeight.w400),),
                   ],
                 ),
                 actions: currentIndex == 5 ? [

@@ -90,8 +90,8 @@ class _BluetoothPageState extends State<BluetoothPage> {
                   Navigator.pop(context);
                   openDialog() => showDialog(
                       context: context,
-                      builder: (context) => FutureBuilder(
-                          builder: (context,projectSnap){
+                      builder: (context) => Builder(
+                          builder: (context){
                             return AlertDialog(
                                 title: const Text('Erfolgreich mit Gerät verbunden'),
                                 content: Column(
@@ -139,8 +139,8 @@ class _BluetoothPageState extends State<BluetoothPage> {
                 Navigator.pop(context);
                 openDialog() => showDialog(
                     context: context,
-                    builder: (context) => FutureBuilder(
-                        builder: (context,projectSnap){
+                    builder: (context) => Builder(
+                        builder: (context){
                           return const AlertDialog(
                               title: Text('Erfolgreich mit Gerät verbunden'),
                               content: Column(

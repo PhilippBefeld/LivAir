@@ -76,10 +76,10 @@ class WarningsPageState extends State<WarningsPage>{
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: const Color(0xffF7F9F9),
+          backgroundColor: Colors.white,
           title: Row(
             children: [
-              Text(AppLocalizations.of(context)!.warningsT, style: TextStyle(color: Colors.black),),
+              Text(AppLocalizations.of(context)!.warningsT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
             ],
           ),
           automaticallyImplyLeading: false,
@@ -93,7 +93,7 @@ class WarningsPageState extends State<WarningsPage>{
                   index = 1;
                 });
               },
-              icon: Icon(Icons.add,color: const Color(0xff0099f0),),
+              icon: const Icon(Icons.add,color: Color(0xff0099f0),),
             ),
           ],
         ),
@@ -108,7 +108,7 @@ class WarningsPageState extends State<WarningsPage>{
               const SizedBox(height: 30,),
               OutlinedButton(
                 onPressed: getAllDevices,
-                style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0)),
+                style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),side: (const BorderSide(color: Color(0xff0099f0)))),
                 child: Text(AppLocalizations.of(context)!.addWarning,style: const TextStyle(color: Colors.white),),
               )
             ],
@@ -120,10 +120,10 @@ class WarningsPageState extends State<WarningsPage>{
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xffF7F9F9),
+          backgroundColor: Colors.white,
           title: Row(
             children: [
-              Text(AppLocalizations.of(context)!.warningsT,style: TextStyle(color: Colors.black),),
+              Text(AppLocalizations.of(context)!.warningsT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
             ],
           ),
           iconTheme: const IconThemeData(
@@ -296,7 +296,7 @@ class WarningsPageState extends State<WarningsPage>{
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        backgroundColor: const Color(0xffF7F9F9),
+        backgroundColor: Colors.white,
         title: Row(
           children: [
             IconButton(
@@ -307,7 +307,7 @@ class WarningsPageState extends State<WarningsPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.selectThresholdT,style: TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.selectThresholdT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           ],
         ),
       ),
@@ -372,7 +372,7 @@ class WarningsPageState extends State<WarningsPage>{
           iconTheme: const IconThemeData(
             color: Colors.black,
           ),
-          backgroundColor: const Color(0xffF7F9F9),
+          backgroundColor: Colors.white,
           title: Row(
             children: [
               IconButton(
@@ -383,7 +383,7 @@ class WarningsPageState extends State<WarningsPage>{
                   });
                 },
               ),
-              Text(AppLocalizations.of(context)!.selectDeviceT,style: const TextStyle(color: Colors.black),),
+              Text(AppLocalizations.of(context)!.selectDeviceT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
             ],
           ),
         ),
@@ -422,7 +422,7 @@ class WarningsPageState extends State<WarningsPage>{
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        backgroundColor: const Color(0xffF7F9F9),
+        backgroundColor: Colors.white,
         title: Row(
           children: [
             IconButton(
@@ -433,7 +433,7 @@ class WarningsPageState extends State<WarningsPage>{
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.selectDurationT,style: const TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.selectDurationT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
           ],
         ),
       ),

@@ -7,6 +7,7 @@ import 'package:flutter_material_symbols/flutter_material_symbols.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_places_flutter/model/prediction.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tuple/tuple.dart';
@@ -22,6 +23,7 @@ import 'package:location/location.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../components/data/device.dart';
 import '../components/line_chart_data/line_chart_data.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
 
 class DeviceDetailPage extends StatefulWidget {
 
@@ -57,6 +59,8 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
   final storage = FlutterSecureStorage();
   String? unit;
 
+
+  WebSocketChannel? channel;
   List<dynamic> radonHistory = [];
   List<Tuple2<int,int>> radonHistoryTimestamps = [];
   List<int> radonValuesTimeseries = [];
@@ -98,6 +102,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
 
   //locationScreen values
   TextEditingController locationController = TextEditingController();
+  TextEditingController deviceLocationController = TextEditingController();
 
   //shareDeviceScreen values
   TextEditingController emailController = TextEditingController();
@@ -134,10 +139,10 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     final token = tbClient.getJwtToken();
     String id = device.keys.elementAt(0);
     try{
-      final channel = WebSocketChannel.connect(
+      channel = WebSocketChannel.connect(
         Uri.parse('wss://dashboard.livair.io/api/ws/plugins/telemetry?token=$token'),
       );
-      channel.sink.add(
+      channel!.sink.add(
         jsonEncode(
           {
             "attrSubCmds":[
@@ -161,7 +166,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
           },
         ),
       );
-      channel.sink.add(
+      channel!.sink.add(
         jsonEncode(
           {
             "attrSubCmds":[],
@@ -185,13 +190,13 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
           },
         ),
       );
-      channel.stream.listen(
+      channel!.stream.listen(
             (data) {
               print(data);
               if(jsonDecode(data)["subscriptionId"] == 1 && firstTry){
                 firstTry = false;
                 requestMsSinceEpoch = DateTime.now().millisecondsSinceEpoch;
-                channel.sink.add(
+                channel!.sink.add(
                   jsonEncode(
                       {
                         "attrSubCmds": [],
@@ -284,7 +289,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       }
                   )
                 );
-                channel.sink.add(
+                channel!.sink.add(
                   jsonEncode(
                       {
                         "attrSubCmds": [],
@@ -432,7 +437,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         radonHistoryTimestamps.add(singleTimestamp);
                       }
                       setState(() {
-                        print("test");
+                        channel!.sink.add({
+                          "cmds": [
+                            {
+                              "entityType": "DEVICE",
+                              "entityId": device.keys.elementAt(0),
+                              "scope": "CLIENT_SCOPE",
+                              "cmdId": 1,
+                              "unsubscribe": true
+                            }
+                          ]
+                        });
                         screenIndex = 1;
                       });
                     }
@@ -699,12 +714,41 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
           titleTextStyle: const TextStyle(color: Colors.black, fontSize: 20),
           centerTitle: false,
           actions:  [
+            IconButton(
+              icon: const Icon(Icons.refresh, color: Colors.black),
+              onPressed: () async{
+                try {
+                  final result = await InternetAddress.lookup('example.com');
+                  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                  }
+                } on SocketException catch (_) {
+                  Fluttertoast.showToast(
+                      msg: "No internet connection"
+                  );
+                  return;
+                }
+                setState(() {
+                  futureFuncRunning = false;
+                  firstTry = true;
+                });
+              },
+            ),
             PopupMenuButton(
                 itemBuilder: (context)=>[
                   PopupMenuItem(
                     value: 1,
                     child: Text(AppLocalizations.of(context)!.deviceInfo),
-                    onTap: (){
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         screenIndex = 3;
                       });
@@ -713,7 +757,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   PopupMenuItem(
                     value: 2,
                     child: Text(AppLocalizations.of(context)!.deviceSettings),
-                    onTap: (){
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         screenIndex = 2;
                       });
@@ -722,7 +776,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   PopupMenuItem(
                     value: 5,
                     child: Text(AppLocalizations.of(context)!.exportData),
-                    onTap: (){
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         screenIndex = 5;
                       });
@@ -731,7 +795,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   PopupMenuItem(
                     value: 6,
                     child: Text(AppLocalizations.of(context)!.shareDevice),
-                    onTap: (){
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         screenIndex = 6;
                       });
@@ -740,7 +814,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   PopupMenuItem(
                     value: 8,
                     child: Text(AppLocalizations.of(context)!.warning),
-                    onTap: (){
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         screenIndex = 8;
                       });
@@ -749,7 +833,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   PopupMenuItem(
                     value: 9,
                     child: Text(AppLocalizations.of(context)!.identify),
-                    onTap: (){
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         identifyDevice();
                       });
@@ -758,7 +852,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   PopupMenuItem(
                     value: 10,
                     child: Text(AppLocalizations.of(context)!.delete),
-                    onTap: (){
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         deleteDevice();
                       });
@@ -871,10 +975,10 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                           child: OutlinedButton(
-                            onPressed: ()=>{
+                            onPressed: (){
                               setState((){
                                 selectedNumberOfDays = 1;
-                              })
+                              });
                             },
                             style: OutlinedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
@@ -896,10 +1000,10 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                           child: OutlinedButton(
-                            onPressed: ()=>{
+                            onPressed: (){
                               setState((){
                                 selectedNumberOfDays = 2;
-                              })
+                              });
                             },
                             style: OutlinedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
@@ -1591,7 +1695,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 SizedBox(
                   width: 100,
                   child: OutlinedButton(
-                      onPressed: () {
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
                         displayType(0);
                       },
                       style: OutlinedButton.styleFrom(backgroundColor: d_unit == 0 ?  Colors.white : const Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
@@ -1607,7 +1721,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 SizedBox(
                   width: 100,
                   child: OutlinedButton(
-                      onPressed: () {
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
                         displayType(1);
                       },
                       style: OutlinedButton.styleFrom(backgroundColor: d_unit == 1 ?  Colors.white : const Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
@@ -1623,7 +1747,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 SizedBox(
                   width: 100,
                   child: OutlinedButton(
-                      onPressed: () {
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
                         displayType(2);
                       },
                       style: OutlinedButton.styleFrom(backgroundColor: d_unit == 1 ?  Colors.white : Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
@@ -2033,7 +2167,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     if(!deviceFound){
       Navigator.pop(context);
       Fluttertoast.showToast(
-          msg: "No devices found"
+          msg: "The device wasn't found"
       );
     }
   }
@@ -2124,6 +2258,41 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       hintStyle: TextStyle(color: Colors.grey[500],fontSize: 12),
                     ),
                   ),
+                  GooglePlaceAutoCompleteTextField(
+                    textEditingController: deviceLocationController,
+                    googleAPIKey: "AIzaSyDbedbD3jc34d-eYRUw1PC-vT4sPFeBdMQ",
+                    inputDecoration: InputDecoration(),
+                    debounceTime: 800, // default 600 ms,
+                    //countries: ["in","fr"],// optional by default null is set
+                    isLatLngRequired:true,// if you required coordinates from place detail
+                    getPlaceDetailWithLatLng: (Prediction prediction) {
+                      // this method will return latlng with place detail
+                      print("placeDetails" + prediction.lng.toString());
+                    }, // this callback is called when isLatLngRequired is true
+                    itemClick: (Prediction prediction) {
+                      deviceLocationController.text = prediction.description!;
+                      deviceLocationController.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description!.length));
+                    },
+                    // if we want to make custom list item builder
+                    itemBuilder: (context, index, Prediction prediction) {
+                      return Container(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.location_on),
+                            const SizedBox(
+                              width: 7,
+                            ),
+                            Expanded(child: Text("${prediction.description??""}"))
+                          ],
+                        ),
+                      );
+                    },
+                    // if you want to add seperator between list items
+                    seperatedBuilder: Divider(),
+                    // want to show close icon
+                    isCrossBtnShown: true,
+                  ),
                 ],
               ),
 
@@ -2131,7 +2300,19 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: renameDevice,
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
+                        renameDevice();
+                      },
                       style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                       child: Text(AppLocalizations.of(context)!.rename,style: const TextStyle(color: Colors.white)),
                     ),
@@ -2219,10 +2400,10 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                           child: OutlinedButton(
-                            onPressed: ()=>{
+                            onPressed: (){
                               setState((){
                                 customTimeseriesSelected = false;
-                              })
+                              });
                             },
                             style: OutlinedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
@@ -2244,10 +2425,10 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                           child: OutlinedButton(
-                            onPressed: ()=>{
+                            onPressed: (){
                               setState((){
                                 customTimeseriesSelected = true;
-                              })
+                              });
                             },
                             style: OutlinedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
@@ -2322,7 +2503,19 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: exportData,
+                        onPressed: () async{
+                          try {
+                            final result = await InternetAddress.lookup('example.com');
+                            if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                            }
+                          } on SocketException catch (_) {
+                            Fluttertoast.showToast(
+                                msg: "No internet connection"
+                            );
+                            return;
+                          }
+                          exportData();
+                        },
                         style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: Size(100, 50)),
                         child: Text(AppLocalizations.of(context)!.export,style: const TextStyle(color: Colors.white)),
                       ),
@@ -2446,7 +2639,19 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: renameDevice,
+                  onPressed: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
+                    renameDevice();
+                  },
                   style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                   child: Text(AppLocalizations.of(context)!.rename,style: const TextStyle(color: Colors.white)),
                 ),
@@ -2461,7 +2666,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   onPressed: (){
                     Navigator.pop(context);
                   },
-                  style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0),minimumSize: Size(100, 50)),
+                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                   child: Text(AppLocalizations.of(context)!.cancel,style: const TextStyle(color: Colors.black)),
                 ),
               ),
@@ -2501,7 +2706,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
             title: Text(AppLocalizations.of(context)!.manageUsersT,style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
             actions: [
               IconButton(
-                  onPressed: (){
+                  onPressed: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
                     setState(() {
                       screenIndex = 7;
                     });
@@ -2526,13 +2741,23 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   Text(AppLocalizations.of(context)!.addUserDialog,style: const TextStyle(fontSize: 16),textAlign: TextAlign.center,),
                   const SizedBox(height: 30,),
                   OutlinedButton(
-                    onPressed: (){
+                    onPressed: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         screenIndex = 7;
                       });
                     },
-                    style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0)),
-                    child: Text(AppLocalizations.of(context)!.addUser,style: TextStyle(color: Colors.white),),
+                    style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0)),
+                    child: Text(AppLocalizations.of(context)!.addUser,style: const TextStyle(color: Colors.white),),
                   )
                 ],
               ),
@@ -2581,7 +2806,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                     )
                                 ),
                                 IconButton(
-                                    onPressed: (){
+                                    onPressed: () async{
+                                      try {
+                                        final result = await InternetAddress.lookup('example.com');
+                                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                        }
+                                      } on SocketException catch (_) {
+                                        Fluttertoast.showToast(
+                                            msg: "No internet connection"
+                                        );
+                                        return;
+                                      }
                                       emailToRemove = viewerData.elementAt(index).values.elementAt(0);
                                       removeViewerDialog();
                                     },
@@ -2668,7 +2903,19 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
               children: [
                 Expanded(
                   child: OutlinedButton(
-                      onPressed: isValidEmail() == true ? sendShareInvite : null,
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
+                        isValidEmail() == true ? sendShareInvite : null;
+                      },
                       style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                       child: Text(AppLocalizations.of(context)!.invite, style: const TextStyle(color: Colors.white),)
                   ),
@@ -2738,7 +2985,19 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: renameDevice,
+                  onPressed: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
+                    removeViewer();
+                  },
                   style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                   child: Text(AppLocalizations.of(context)!.removeUser,style: const TextStyle(color: Colors.white)),
                 ),
@@ -2915,7 +3174,17 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
               children: [
                 Expanded(
                   child: OutlinedButton(
-                      onPressed: (){
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
                         setState(() {
                           updateWarning();
                           screenIndex = 1;
@@ -3068,6 +3337,16 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
               Expanded(
                 child: OutlinedButton(
                     onPressed: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       var token = tbClient.getJwtToken();
                       String id = device.keys.elementAt(0);
                       dio.options.headers['content-Type'] = 'application/json';

@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -76,6 +77,16 @@ class DevicePageState extends State<DevicePage> {
     var firstTry = true;
     unit = await storage.read(key: 'unit');
     try{
+      try {
+        final result = await InternetAddress.lookup('example.com');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        }
+      } on SocketException catch (_) {
+        Fluttertoast.showToast(
+            msg: "No internet connection"
+        );
+        return;
+      }
       channel = WebSocketChannel.connect(
         Uri.parse('wss://dashboard.livair.io/api/ws/plugins/telemetry?token=$token'),
       );
@@ -331,6 +342,7 @@ class DevicePageState extends State<DevicePage> {
               }
       );
     }catch(e){
+
     }
   }
 
@@ -496,9 +508,9 @@ class DevicePageState extends State<DevicePage> {
               ),
             ),
 
-            /*GooglePlaceAutoCompleteTextField(
+            GooglePlaceAutoCompleteTextField(
               textEditingController: deviceLocationController,
-              googleAPIKey: "YOUR_GOOGLE_API_KEY",
+              googleAPIKey: "AIzaSyDbedbD3jc34d-eYRUw1PC-vT4sPFeBdMQ",
               inputDecoration: InputDecoration(),
               debounceTime: 800, // default 600 ms,
               //countries: ["in","fr"],// optional by default null is set
@@ -514,11 +526,11 @@ class DevicePageState extends State<DevicePage> {
               // if we want to make custom list item builder
               itemBuilder: (context, index, Prediction prediction) {
                 return Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Row(
                     children: [
-                      Icon(Icons.location_on),
-                      SizedBox(
+                      const Icon(Icons.location_on),
+                      const SizedBox(
                         width: 7,
                       ),
                       Expanded(child: Text("${prediction.description??""}"))
@@ -530,13 +542,23 @@ class DevicePageState extends State<DevicePage> {
             seperatedBuilder: Divider(),
               // want to show close icon
             isCrossBtnShown: true,
-            ),*/
+            ),
             const SizedBox(height: 30,),
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton(
-                      onPressed: ()async{
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
                         newDeviceLocation = deviceLocationController.text;
                         sendDeviceClaimRequest();
                       },
@@ -739,6 +761,16 @@ class DevicePageState extends State<DevicePage> {
 
 
   searchAvailableDevices() async{
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection"
+      );
+      return;
+    }
     foundDevices = [];
     foundDevicesIds = [];
 
@@ -773,6 +805,13 @@ class DevicePageState extends State<DevicePage> {
     await FlutterBluePlus.startScan(timeout: const Duration(seconds: 3));
     await Future<void>.delayed( const Duration(seconds: 4));
     subscription.cancel();
+    if(foundDevices!.isEmpty){
+      screenIndex = 0;
+      Fluttertoast.showToast(
+          msg: "No devices found"
+      );
+      return;
+    }
     setState(() {
       screenIndex = 1;
     });
@@ -962,7 +1001,17 @@ class DevicePageState extends State<DevicePage> {
               automaticallyImplyLeading: false,
               actions: [
                 IconButton(
-                    onPressed: (){
+                    onPressed: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       searchAvailableDevices();
                     },
                     icon: const Icon(MaterialSymbols.add,color: Color(0xff0099f0),)
@@ -983,7 +1032,17 @@ class DevicePageState extends State<DevicePage> {
                           itemCount: currentDevices2.length,
                           itemBuilder: (BuildContext context, int index) {
                             return MyDeviceWidget(
-                              onTap: (){
+                              onTap: () async{
+                                  try {
+                                    final result = await InternetAddress.lookup('example.com');
+                                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                    }
+                                  } on SocketException catch (_) {
+                                    Fluttertoast.showToast(
+                                        msg: "No internet connection"
+                                    );
+                                    return;
+                                  }
                                 showDeviceDetails(currentDevices2[index]);
                               },
                               name: currentDevices2[index].values.elementAt(0).label ?? currentDevices2[index].values.elementAt(0).name,

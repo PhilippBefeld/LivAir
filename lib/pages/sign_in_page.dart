@@ -580,7 +580,7 @@ class SignInPageState extends State<SignInPage> {
                                       )
                                   );
                                 },
-                                child: Text(AppLocalizations.of(context)!.signUp, style: TextStyle(fontSize: 14,decoration: TextDecoration.underline),)
+                                child: Text(AppLocalizations.of(context)!.signUp, style: const TextStyle(fontSize: 14,decoration: TextDecoration.underline),)
                             )
                           ],
                         )

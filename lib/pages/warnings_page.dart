@@ -1,9 +1,11 @@
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:thingsboard_pe_client/thingsboard_client.dart';
 import 'package:dio/dio.dart';
@@ -49,6 +51,16 @@ class WarningsPageState extends State<WarningsPage>{
 
 
   getAllWarnings() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection"
+      );
+      return;
+    }
     warnings = [];
     unit = await storage.read(key: 'unit');
     final token = tbClient.getJwtToken();
@@ -88,9 +100,19 @@ class WarningsPageState extends State<WarningsPage>{
           ),
           actions: [
             IconButton(
-              onPressed: (){
+              onPressed: () async{
+                try {
+                  final result = await InternetAddress.lookup('example.com');
+                  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                  }
+                } on SocketException catch (_) {
+                  Fluttertoast.showToast(
+                      msg: "No internet connection"
+                  );
+                  return;
+                }
                 setState(() {
-                  index = 1;
+                  getAllDevices();
                 });
               },
               icon: const Icon(Icons.add,color: Color(0xff0099f0),),
@@ -107,7 +129,19 @@ class WarningsPageState extends State<WarningsPage>{
               Text(AppLocalizations.of(context)!.noWarningsYet),
               const SizedBox(height: 30,),
               OutlinedButton(
-                onPressed: getAllDevices,
+                onPressed: () async {
+                  try {
+                    final result = await InternetAddress.lookup('example.com');
+                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                    }
+                  } on SocketException catch (_) {
+                    Fluttertoast.showToast(
+                        msg: "No internet connection"
+                    );
+                    return;
+                  }
+                  getAllDevices;
+                },
                 style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),side: (const BorderSide(color: Color(0xff0099f0)))),
                 child: Text(AppLocalizations.of(context)!.addWarning,style: const TextStyle(color: Colors.white),),
               )
@@ -131,12 +165,22 @@ class WarningsPageState extends State<WarningsPage>{
           ),
           actions: [
             IconButton(
-                onPressed: (){
+                onPressed: () async{
+                  try {
+                    final result = await InternetAddress.lookup('example.com');
+                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                    }
+                  } on SocketException catch (_) {
+                    Fluttertoast.showToast(
+                        msg: "No internet connection"
+                    );
+                    return;
+                  }
                   setState(() {
                     getAllDevices();
                   });
                 },
-                icon: Icon(Icons.add,color: const Color(0xff0099f0),),
+                icon: const Icon(Icons.add,color: Color(0xff0099f0),),
             ),
           ],
         ),
@@ -172,12 +216,22 @@ class WarningsPageState extends State<WarningsPage>{
                                 ],
                               ),
                               IconButton(
-                                  onPressed: (){
+                                  onPressed: () async{
+                                    try {
+                                      final result = await InternetAddress.lookup('example.com');
+                                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                      }
+                                    } on SocketException catch (_) {
+                                      Fluttertoast.showToast(
+                                          msg: "No internet connection"
+                                      );
+                                      return;
+                                    }
                                     selectedDevice = warnings.elementAt(index).values.elementAt(0);
                                     deleteWarningDialog();
                                   },
                                   color: Colors.black,
-                                  icon: ImageIcon(AssetImage('lib/images/TrashbinButton.png'),)
+                                  icon: const ImageIcon(AssetImage('lib/images/TrashbinButton.png'),)
                               )
                             ],
                           ),
@@ -351,8 +405,8 @@ class WarningsPageState extends State<WarningsPage>{
                       onPressed: ()=> setState(() {
                         index = 3;
                       }),
-                      style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0),minimumSize: Size(100, 50)),
-                      child: Text(AppLocalizations.of(context)!.selectDuration,style: TextStyle(color: Colors.white),)
+                      style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
+                      child: Text(AppLocalizations.of(context)!.selectDuration,style: const TextStyle(color: Colors.white),)
                   ),
                 ),
               ],
@@ -467,10 +521,22 @@ class WarningsPageState extends State<WarningsPage>{
               children: [
                 Expanded(
                   child: OutlinedButton(
-                      onPressed: ()=> setState(() {
-                        updateWarning();
-                        index = 0;
-                      }),
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
+                        setState(() {
+                          updateWarning();
+                          index = 0;
+                        });
+                      } ,
                       style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0),minimumSize: Size(100, 50)),
                       child: Text(AppLocalizations.of(context)!.createWarning,style: const TextStyle(color: Colors.white),)
                   ),
@@ -529,8 +595,20 @@ class WarningsPageState extends State<WarningsPage>{
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: deleteWarning,
-                  style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0)),
+                  onPressed: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
+                    deleteWarning();
+                  },
+                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0)),
                   child: Text(AppLocalizations.of(context)!.removeWarning,style: const TextStyle(color: Colors.white),),
                 ),
               ),

@@ -1,7 +1,9 @@
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:thingsboard_pe_client/thingsboard_client.dart';
 import 'package:dio/dio.dart';
@@ -197,10 +199,22 @@ class NotificationsPageState extends State<NotificationsPage>{
                           children: [
                             Expanded(
                               child: OutlinedButton(
-                                  onPressed: ()=> setState(() {
-                                    deleteNotifications();
-                                    Navigator.pop(context);
-                                  }),
+                                  onPressed: () async{
+                                    try {
+                                      final result = await InternetAddress.lookup('example.com');
+                                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                      }
+                                    } on SocketException catch (_) {
+                                      Fluttertoast.showToast(
+                                          msg: "No internet connection"
+                                      );
+                                      return;
+                                    }
+                                    setState(() {
+                                      deleteNotifications();
+                                      Navigator.pop(context);
+                                    });
+                                  },
                                   style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50), side: const BorderSide(color: Color(0xff0099f0))),
                                   child: Text(AppLocalizations.of(context)!.contin,style: const TextStyle(color: Color(0xff0099f0)),)
                               ),
@@ -212,9 +226,11 @@ class NotificationsPageState extends State<NotificationsPage>{
                           children: [
                             Expanded(
                               child: OutlinedButton(
-                                  onPressed: ()=> setState(() {
-                                    Navigator.pop(context);
-                                  }),
+                                  onPressed: () {
+                                    setState(() {
+                                      Navigator.pop(context);
+                                    });
+                                  },
                                   style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50), side: const BorderSide(color: Color(0xff0099f0))),
                                   child: Text(AppLocalizations.of(context)!.cancel,style: const TextStyle(color: Color(0xff0099f0)),)
                               ),

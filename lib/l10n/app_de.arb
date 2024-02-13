@@ -197,8 +197,8 @@
     "scanCode": "Scanne den QR Code",
     "findCode": "Wo finde ich den Code?",
     "findCodeDialog": "Schalten dein Gerät ein und benutze den Code auf der Unterseite",
-    "termsOfService": "Terms of service",
-    "privacyPolicy": "Privacy policy",
+    "termsOfService": "Nutzungsbedingungen",
+    "privacyPolicy": "Datenschutzrichtlinien",
     "scanForCode": "Scanne den Code",
     "autoSignIn": "Automatisch anmelden",
     "notificationsT": "NOTIFICATIONS",
@@ -207,7 +207,13 @@
     "minutesAgo": "Minuten zuvor",
     "hoursAgo": "Stunden zuvor",
     "daysAgo": "Tage zuvor",
-    "privacyPolicyyT": "PRIVACY POLICY",
+    "privacyPolicyyT": "DATENSCHUTZRICHTLINIEN",
     "imprint": "Impressum",
-    "imprintT": "IMPRESSUM"
+    "imprintT": "IMPRESSUM",
+    "deleteAccountT": "ACCOUNT LÖSCHEN",
+    "helpUsBecomeBetter": "Hif uns besser zu werden",
+    "tellUsReason": "Teile uns mit wieso du deinen Account löschen willst",
+    "deleteAccountM": "Wenn du deinen Account löschst, wird er sofort deaktiviert. Accounts sind nur dem LivAir Team sichtbar, bis sie endgültig gelöscht sind. Das Löschen findet innerhalb der in den Datenschutzrichtlinien angegebenen Zeitspanne statt.",
+    "deleteAccount": "Account löschen",
+    "stillGotDevicesM": "Es ist nicht möglich einen Account zu löschen, solange sich noch Geräte in ihm befinden.\n\nBitte entferne zuerst alle deine Geräte und versuche es erneut."
 }

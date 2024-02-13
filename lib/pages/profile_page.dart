@@ -1,11 +1,13 @@
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_material_symbols/flutter_material_symbols.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:mvp/components/long_Strings/policy.dart';
 import 'package:mvp/components/long_Strings/imprint.dart';
@@ -65,6 +67,9 @@ class ProfilePageState extends State<ProfilePage>{
   List<dynamic> viewerDevicesOld = [];
   List<dynamic> viewerDevicesNew = [];
   List<dynamic> devicesToUnshare = [];
+
+  //deleteAccountScreen variables
+  TextEditingController deleteReasonController = TextEditingController();
 
 
   getProfileData() async{
@@ -188,7 +193,19 @@ class ProfilePageState extends State<ProfilePage>{
             children: [
               Expanded(
                 child: OutlinedButton(
-                    onPressed: updatePassword,
+                    onPressed: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
+                      updatePassword();
+                    },
                     style: OutlinedButton.styleFrom(minimumSize: const Size(80, 50),side: const BorderSide(color: Color(0xff0099f0))),
                     child: Text(AppLocalizations.of(context)!.changePassword,)
                 ),
@@ -283,7 +300,17 @@ class ProfilePageState extends State<ProfilePage>{
             Column(
               children: [
                 GestureDetector(
-                  onTap: (){
+                  onTap: ()async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
                     setState(() {
                       currentIndex = 1;
                       showAppBar = true;
@@ -312,8 +339,18 @@ class ProfilePageState extends State<ProfilePage>{
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){
-                    setState(() {
+                  onTap: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
+                    setState((){
                       currentIndex = 2;
                       showAppBar = true;
                       appBarTitle = AppLocalizations.of(context)!.generalSettingsT;
@@ -341,8 +378,18 @@ class ProfilePageState extends State<ProfilePage>{
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){
-                    setState(() {
+                  onTap: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
+                    setState((){
                       currentIndex = 5;
                       showAppBar = true;
                       appBarTitle = AppLocalizations.of(context)!.manageUsersT;
@@ -371,12 +418,22 @@ class ProfilePageState extends State<ProfilePage>{
                 ),
               ],
             ),
-            SizedBox(height: 70,),
+            const SizedBox(height: 70,),
             Column(
               children: [
                 GestureDetector(
-                  onTap: (){
-                    setState(() {
+                  onTap: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
+                    setState((){
                       currentIndex = 10;
                       showAppBar = true;
                       appBarTitle = AppLocalizations.of(context)!.imprintT;
@@ -433,8 +490,18 @@ class ProfilePageState extends State<ProfilePage>{
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){
-                    setState(() {
+                  onTap: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: "No internet connection"
+                      );
+                      return;
+                    }
+                    setState((){
                       currentIndex = 9;
                       showAppBar = true;
                       appBarTitle = AppLocalizations.of(context)!.privacyPolicyyT;
@@ -548,8 +615,20 @@ class ProfilePageState extends State<ProfilePage>{
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                          onPressed: postProfileData,
-                          style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50),side: BorderSide(width: 2,color: Color(0xff0099f0))),
+                          onPressed: ()async{
+                            try {
+                              final result = await InternetAddress.lookup('example.com');
+                              if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                              }
+                            } on SocketException catch (_) {
+                              Fluttertoast.showToast(
+                                  msg: "No internet connection"
+                              );
+                              return;
+                            }
+                            postProfileData;
+                          },
+                          style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50),side: const BorderSide(width: 2,color: Color(0xff0099f0))),
                           child: Text(AppLocalizations.of(context)!.updatePersData, style: const TextStyle(color: Color(0xff0099f0)),)
                       ),
                     ),
@@ -560,7 +639,17 @@ class ProfilePageState extends State<ProfilePage>{
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                          onPressed: (){
+                          onPressed: ()async{
+                            try {
+                              final result = await InternetAddress.lookup('example.com');
+                              if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                              }
+                            } on SocketException catch (_) {
+                              Fluttertoast.showToast(
+                                  msg: "No internet connection"
+                              );
+                              return;
+                            }
                             setState(() {
                               currentIndex = 8;
                               oldPasswordController.text = "";
@@ -569,20 +658,36 @@ class ProfilePageState extends State<ProfilePage>{
                               showAppBar = true;
                             });
                           },
-                          style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: Size(100, 50),side: BorderSide(width: 2,color: Color(0xff0099f0))),
+                          style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50),side: const BorderSide(width: 2,color: Color(0xff0099f0))),
                           child: Text(AppLocalizations.of(context)!.changePassword, style: const TextStyle(color: Color(0xff0099f0)),)
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 15,),
+                const SizedBox(height: 15,),
                 Row(
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                          onPressed: null,
-                          style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: Size(100, 50),side: BorderSide(width: 2,color: Color(0xff0099f0))),
-                          child: Text(AppLocalizations.of(context)!.deleteAccount, style: TextStyle(color: Color(0xff0099f0)),)
+                          onPressed: ()async{
+                            try {
+                              final result = await InternetAddress.lookup('example.com');
+                              if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                              }
+                            } on SocketException catch (_) {
+                              Fluttertoast.showToast(
+                                  msg: "No internet connection"
+                              );
+                              return;
+                            }
+                            setState(() {
+                              currentIndex = 11;
+                              appBarTitle = AppLocalizations.of(context)!.deleteAccountT;
+                              showAppBar = true;
+                            });
+                          },
+                          style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50),side: const BorderSide(width: 2,color: Color(0xff0099f0))),
+                          child: Text(AppLocalizations.of(context)!.deleteAccount, style: const TextStyle(color: Color(0xff0099f0)),)
                       ),
                     ),
                   ],
@@ -593,6 +698,135 @@ class ProfilePageState extends State<ProfilePage>{
         ],
       ),
     );
+  }
+
+  deleteAccountScreen(){
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(AppLocalizations.of(context)!.helpUsBecomeBetter, style: const TextStyle(fontSize: 12),),
+              const SizedBox(height: 5,),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      maxLines: 5,
+                      textAlign: TextAlign.start,
+                      controller: deleteReasonController,
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.tellUsReason,
+                        hintTextDirection: TextDirection.ltr,
+                        hintStyle: const TextStyle(color: Color(0xff90A4AE)),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(width: 2,color: Color(0xffeceff1)),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(width: 2,color: Color(0xffeceff1)),
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(AppLocalizations.of(context)!.deleteAccountM, style: const TextStyle(fontSize: 12),),
+              const SizedBox(height: 20,),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                        onPressed: () async{
+                          if(await canDeleteAccount()){
+                            final token = tbClient.getJwtToken();
+                            dio.options.headers['content-Type'] = 'application/json';
+                            dio.options.headers['Accept'] = "application/json, text/plain, */*";
+                            dio.options.headers['Authorization'] = "Bearer $token";
+                            try{
+                              await dio.delete('https://dashboard.livair.io/api/livAir/deleteAccount');
+                            }on DioError catch(e){
+                              return;
+                            }
+                            const storage = FlutterSecureStorage();
+                            await storage.delete(key: 'email');
+                            await storage.delete(key: 'password');
+                            if(await storage.containsKey(key: "autoSignIn")){
+                              await storage.delete(key: "autoSignIn");
+                            }
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099F0),minimumSize: const Size(80, 50),side: const BorderSide(color: Color(0xff0099F0))),
+                        child: Text(AppLocalizations.of(context)!.deleteAccount,style: const TextStyle(color: Colors.white),)
+                    ),
+                  ),
+                ],
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+   Future<bool> canDeleteAccount() async{
+    final token = tbClient.getJwtToken();
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers['Accept'] = "application/json, text/plain, */*";
+    dio.options.headers['Authorization'] = "Bearer $token";
+    var result;
+    try{
+      result = await dio.get('https://dashboard.livair.io/api/livAir/canDeleteAccount');
+    }on DioError catch(e){
+    }
+    if(!result.data){
+      setState(() {
+        currentIndex = 1;
+        appBarTitle = AppLocalizations.of(context)!.personalDataT;
+        showAppBar = true;
+      });
+      await Future.delayed(const Duration(milliseconds: 100));
+      AlertDialog alert = AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(AppLocalizations.of(context)!.stillGotDevicesM),
+            const SizedBox(height: 30,),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099F0),minimumSize: const Size(80, 50),side: const BorderSide(color: Color(0xff0099F0))),
+                      child: Text(AppLocalizations.of(context)!.contin,style: const TextStyle(color: Colors.white),)
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+      return false;
+    }
+    return true;
   }
 
   showGeneralSettingsScreen(){
@@ -608,24 +842,22 @@ class ProfilePageState extends State<ProfilePage>{
           },
           child: Container(
             height: 50.0,
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(width: 1,color: Color(0xffb0bec5))),
-            ),
+            decoration: const BoxDecoration(border: Border(bottom: BorderSide(width: 1,color: Color(0xffb0bec5))),),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   children: [
-                    SizedBox(width: 20,),
-                    Text(AppLocalizations.of(context)!.language,style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
+                    const SizedBox(width: 20,),
+                    Text(AppLocalizations.of(context)!.language,style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
                   ],
                 ),
                 Row(
                   children: [
-                    Text(AppLocalizations.of(context)!.localeName.toUpperCase(),style: TextStyle(fontSize: 16,color: Color(0xff78909C)),),
-                    ImageIcon(AssetImage('lib/images/ListButton_Triangle.png')),
-                    SizedBox(width: 22,)
+                    Text(AppLocalizations.of(context)!.localeName.toUpperCase(),style: const TextStyle(fontSize: 16,color: Color(0xff78909C)),),
+                    const ImageIcon(AssetImage('lib/images/ListButton_Triangle.png')),
+                    const SizedBox(width: 22,)
                   ],
                 )
               ],
@@ -642,24 +874,22 @@ class ProfilePageState extends State<ProfilePage>{
           },
           child: Container(
             height: 50.0,
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(width: 1,color: Color(0xffb0bec5))),
-            ),
+            decoration: const BoxDecoration(border: Border(bottom: BorderSide(width: 1,color: Color(0xffb0bec5))),),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   children: [
-                    SizedBox(width: 20,),
-                    Text(AppLocalizations.of(context)!.radonUnit,style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
+                    const SizedBox(width: 20,),
+                    Text(AppLocalizations.of(context)!.radonUnit,style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400,), textAlign: TextAlign.center),
                   ],
                 ),
                 Row(
                   children: [
-                    Text(unit!,style: TextStyle(fontSize: 16,color: Color(0xff78909C)),),
-                    ImageIcon(AssetImage('lib/images/ListButton_Triangle.png')),
-                    SizedBox(width: 22,)
+                    Text(unit!,style: const TextStyle(fontSize: 16,color: Color(0xff78909C)),),
+                    const ImageIcon(AssetImage('lib/images/ListButton_Triangle.png')),
+                    const SizedBox(width: 22,)
                   ],
                 )
               ],
@@ -861,12 +1091,22 @@ class ProfilePageState extends State<ProfilePage>{
                   Text(AppLocalizations.of(context)!.giveSelectedViewingRights,textAlign: TextAlign.center,),
                   const SizedBox(height: 30,),
                   OutlinedButton(
-                    onPressed: (){
+                    onPressed: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
                       setState(() {
                         getAllDevices(6);
                       });
                     },
-                    style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0)),
+                    style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0)),
                     child: Text(AppLocalizations.of(context)!.addUser,style: const TextStyle(color: Colors.white),),
                   )
                 ],
@@ -929,7 +1169,17 @@ class ProfilePageState extends State<ProfilePage>{
                                     PopupMenuItem(
                                       value: 0,
                                       child: Text(AppLocalizations.of(context)!.manageDevices),
-                                      onTap: (){
+                                      onTap: ()async{
+                                        try {
+                                          final result = await InternetAddress.lookup('example.com');
+                                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                          }
+                                        } on SocketException catch (_) {
+                                          Fluttertoast.showToast(
+                                              msg: "No internet connection"
+                                          );
+                                          return;
+                                        }
                                         setState(() {
                                           viewerToManage = viewerData.elementAt(index).values.elementAt(0);
                                           viewerDevicesOld = List.from(viewerData.elementAt(index).values.elementAt(2));
@@ -941,7 +1191,17 @@ class ProfilePageState extends State<ProfilePage>{
                                     PopupMenuItem(
                                       value: 1,
                                       child: Text(AppLocalizations.of(context)!.remove),
-                                      onTap: (){
+                                      onTap: () async{
+                                        try {
+                                          final result = await InternetAddress.lookup('example.com');
+                                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                          }
+                                        } on SocketException catch (_) {
+                                          Fluttertoast.showToast(
+                                              msg: "No internet connection"
+                                          );
+                                          return;
+                                        }
                                         setState(() {
                                           devicesToUnshare = viewerData.elementAt(index).values.elementAt(2);
                                           emailToRemove = viewerData.elementAt(index).values.elementAt(0);
@@ -1045,9 +1305,21 @@ class ProfilePageState extends State<ProfilePage>{
               children: [
                 Expanded(
                   child: OutlinedButton(
-                      onPressed: isValidEmail2() == true ? sendShareInvite2 : null,
-                      style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0),minimumSize: Size(100, 50)),
-                      child: Text(AppLocalizations.of(context)!.invite, style: TextStyle(color: Colors.white),)
+                      onPressed: ()async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
+                        isValidEmail2() == true ? sendShareInvite2 : null;
+                      },
+                      style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
+                      child: Text(AppLocalizations.of(context)!.invite, style: const TextStyle(color: Colors.white),)
                   ),
                 ),
               ],
@@ -1098,14 +1370,13 @@ class ProfilePageState extends State<ProfilePage>{
                             onPressed: (){
                               setState(() {
                                 if(viewerDevicesNew.contains(deviceIds.elementAt(index))){
-                                  print(viewerDevicesOld);
                                   viewerDevicesNew.remove(deviceIds.elementAt(index));
                                 }else{
                                   viewerDevicesNew.add(deviceIds.elementAt(index));
                                 }
                               });
                             },
-                            icon: viewerDevicesNew.contains(deviceIds.elementAt(index)) ? Icon(Icons.circle) : Icon(Icons.circle_outlined),
+                            icon: viewerDevicesNew.contains(deviceIds.elementAt(index)) ? const Icon(Icons.circle) : const Icon(Icons.circle_outlined),
                           )
                         ],
                       ),
@@ -1120,7 +1391,17 @@ class ProfilePageState extends State<ProfilePage>{
               children: [
                 Expanded(
                   child: OutlinedButton(
-                      onPressed: (){
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
                         List<dynamic> changes = viewerDevicesOld.where((item) => !viewerDevicesNew.contains(item)).toList();
                         devicesToShare = changes.where((item) => viewerDevicesNew.contains(item)).toList();
                         devicesToUnshare = changes.where((item) => viewerDevicesOld.contains(item)).toList();
@@ -1135,8 +1416,8 @@ class ProfilePageState extends State<ProfilePage>{
                           showAppBar = true;
                         });
                       },
-                      style: OutlinedButton.styleFrom(backgroundColor: Color(0xff0099f0),minimumSize: Size(100, 50)),
-                      child: Text(AppLocalizations.of(context)!.save, style: TextStyle(color: Colors.white),)
+                      style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
+                      child: Text(AppLocalizations.of(context)!.save, style: const TextStyle(color: Colors.white),)
                   ),
                 ),
               ],
@@ -1375,6 +1656,7 @@ class ProfilePageState extends State<ProfilePage>{
       case 8: return showPasswordScreen();
       case 9: return showPolicyScreen();
       case 10: return showImprintScreen();
+      case 11: return deleteAccountScreen();
       default:
         return showProfilePageScreen();
     }
@@ -1416,7 +1698,17 @@ class ProfilePageState extends State<ProfilePage>{
                 ),
                 actions: currentIndex == 5 ? [
                   IconButton(
-                      onPressed: (){
+                      onPressed: () async{
+                        try {
+                          final result = await InternetAddress.lookup('example.com');
+                          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                          }
+                        } on SocketException catch (_) {
+                          Fluttertoast.showToast(
+                              msg: "No internet connection"
+                          );
+                          return;
+                        }
                         getAllDevices(6);
                       },
                       icon: const Icon(MaterialSymbols.add)

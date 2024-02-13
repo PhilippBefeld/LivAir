@@ -209,5 +209,11 @@
     "daysAgo": "days ago",
     "privacyPolicyyT": "PRIVACY POLICY",
     "imprint": "Imprint",
-    "imprintT": "IMPRINT"
+    "imprintT": "IMPRINT",
+    "deleteAccountT": "DELETE ACCOUNT",
+    "helpUsBecomeBetter": "Help us to become better",
+    "tellUsReason": "Tell us the reason why you want to delete your account",
+    "deleteAccountM": "If you delete your account now, it will be deactivated immediately. Accounts are only visible to the LivAir team until they are permanently deleted. The deletion process will take place within the period described in our Privacy Policy.",
+    "deleteAccount": "Delete account",
+    "stillGotDevicesM": "It is not possible to delete an account when you still have devices within your account.\n\nFirst delete your devices and then try again."
 }

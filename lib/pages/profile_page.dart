@@ -626,7 +626,7 @@ class ProfilePageState extends State<ProfilePage>{
                               );
                               return;
                             }
-                            postProfileData;
+                            postProfileData();
                           },
                           style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50),side: const BorderSide(width: 2,color: Color(0xff0099f0))),
                           child: Text(AppLocalizations.of(context)!.updatePersData, style: const TextStyle(color: Color(0xff0099f0)),)
@@ -1316,7 +1316,7 @@ class ProfilePageState extends State<ProfilePage>{
                           );
                           return;
                         }
-                        isValidEmail2() == true ? sendShareInvite2 : null;
+                        isValidEmail2() == true ? sendShareInvite2() : null;
                       },
                       style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                       child: Text(AppLocalizations.of(context)!.invite, style: const TextStyle(color: Colors.white),)

@@ -2070,6 +2070,14 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       foundAccessPoints.addEntries([MapEntry(message.substring(message.indexOf("|")+1,message.indexOf(",",message.indexOf("|")+1)),int.parse(message.substring(0,message.indexOf(","))))]);
                       counter++;
                       if(counter==foundAccesspointCount){
+                        if(foundAccesspointCount ==0){
+                          setState(() {
+                            screenIndex = 1;
+                          });
+                          Fluttertoast.showToast(
+                              msg: "No access points found"
+                          );
+                        }
                         Navigator.pop(context);
                         setState(() {
                           screenIndex = 21;
@@ -2914,7 +2922,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           );
                           return;
                         }
-                        isValidEmail() == true ? sendShareInvite : null;
+                        isValidEmail() == true ? sendShareInvite() : null;
                       },
                       style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                       child: Text(AppLocalizations.of(context)!.invite, style: const TextStyle(color: Colors.white),)

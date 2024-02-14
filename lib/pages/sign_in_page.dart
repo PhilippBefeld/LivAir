@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,6 +62,7 @@ class SignInPageState extends State<SignInPage> {
 
 
   void logIn() async {
+
     FocusManager.instance.primaryFocus?.unfocus();
     showDialog(context: context, builder: (context){
       return const Center(child:CircularProgressIndicator());
@@ -79,6 +81,7 @@ class SignInPageState extends State<SignInPage> {
                 }
             )
         );
+
         token = response.data['token'];
         dio.options.headers['Authorization'] = "Bearer $token";
         var isVerifiedData = await dio.get('https://dashboard.livair.io/api/livAir/isVerified/${emailController.text}');
@@ -109,6 +112,7 @@ class SignInPageState extends State<SignInPage> {
       }on DioError catch(e){
         logger.e(e);
       }
+
       await tbClient.login(
           LoginRequest(
               emailController.text,
@@ -216,7 +220,19 @@ class SignInPageState extends State<SignInPage> {
                     padding: const EdgeInsets.all(10),
                     heigth: 60,
                     textInhalt: AppLocalizations.of(context)!.sendEmail,
-                    onTap: sendResetRequest,
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
+                      sendResetRequest;
+                    },
                   ),
                 ],
               ),
@@ -338,7 +354,17 @@ class SignInPageState extends State<SignInPage> {
                         Container(
                           height: 50,
                           child: OutlinedButton(
-                            onPressed: (){
+                            onPressed: () async{
+                              try {
+                                final result = await InternetAddress.lookup('example.com');
+                                if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                }
+                              } on SocketException catch (_) {
+                                Fluttertoast.showToast(
+                                    msg: "No internet connection"
+                                );
+                                return;
+                              }
                               dio.post('https://dashboard.livair.io/api/livAir/verifyCode',
                                 data: jsonEncode(
                                     {
@@ -350,14 +376,12 @@ class SignInPageState extends State<SignInPage> {
                               Navigator.pop(context);
                             },
                             style: OutlinedButton.styleFrom(
-                                side: BorderSide(width: 0),
+                                side: const BorderSide(width: 0),
                                 foregroundColor: const Color(0xff0099F0),
                                 backgroundColor: const Color(0xff0099F0),
-                                minimumSize: Size(60,20)
+                                minimumSize: const Size(60,20)
                             ),
-                            child: Text(AppLocalizations.of(context)!.confirm,style: TextStyle(
-                                color: Colors.white
-                            ),),
+                            child: Text(AppLocalizations.of(context)!.confirm,style: const TextStyle(color: Colors.white),),
                           ),
                         ),
                       ),
@@ -372,14 +396,12 @@ class SignInPageState extends State<SignInPage> {
                           child: OutlinedButton(
                             onPressed: resendVerificationCode,
                             style: OutlinedButton.styleFrom(
-                                side: BorderSide(width: 0),
+                                side: const BorderSide(width: 0),
                                 foregroundColor: const Color(0xff0099F0),
                                 backgroundColor: const Color(0xff0099F0),
-                                minimumSize: Size(60,20)
+                                minimumSize: const Size(60,20)
                             ),
-                            child: Text(AppLocalizations.of(context)!.resendVerificationCode,style: TextStyle(
-                                color: Colors.white
-                            ),),
+                            child: Text(AppLocalizations.of(context)!.resendVerificationCode,style: const TextStyle(color: Colors.white),),
                           ),
                         ),
                       ),
@@ -495,7 +517,7 @@ class SignInPageState extends State<SignInPage> {
                                   fillColor: Colors.white,
                                   filled: true,
                                   hintText: AppLocalizations.of(context)!.password,
-                                  hintStyle: TextStyle(color: Color(0xff90a4ae),fontSize: 14),
+                                  hintStyle: const TextStyle(color: Color(0xff90a4ae),fontSize: 14),
                                 ),
                                 onChanged: null,
                                 obscureText: true,
@@ -524,7 +546,19 @@ class SignInPageState extends State<SignInPage> {
                             ),
 
                             TextButton(
-                                onPressed: forgotPassword,
+                                onPressed: () async{
+                                  try {
+                                    final result = await InternetAddress.lookup('example.com');
+                                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                    }
+                                  } on SocketException catch (_) {
+                                    Fluttertoast.showToast(
+                                        msg: "No internet connection"
+                                    );
+                                    return;
+                                  }
+                                  forgotPassword;
+                                },
                                 child: Text(AppLocalizations.of(context)!.forgotPasswordQ,style: const TextStyle(fontSize: 14,decoration: TextDecoration.underline),)),
                           ],
                         ),
@@ -555,7 +589,19 @@ class SignInPageState extends State<SignInPage> {
                           children: [
                             Expanded(
                               child: OutlinedButton(
-                                onPressed: emailIsCorrect  ? logIn : null,
+                                onPressed: () async{
+                                  try {
+                                    final result = await InternetAddress.lookup('example.com');
+                                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                    }
+                                  } on SocketException catch (_) {
+                                    Fluttertoast.showToast(
+                                        msg: "No internet connection"
+                                    );
+                                    return;
+                                  }
+                                  if(emailIsCorrect)logIn();
+                                },
                                 style: OutlinedButton.styleFrom(
                                     side: const BorderSide(width: 2,color: Color(0xff0099f0)),
                                     foregroundColor: Colors.white,
@@ -573,7 +619,17 @@ class SignInPageState extends State<SignInPage> {
                           children: [
                             Text(AppLocalizations.of(context)!.noAccountQ),
                             TextButton(
-                                onPressed: (){
+                                onPressed: () async{
+                                  try {
+                                    final result = await InternetAddress.lookup('example.com');
+                                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                    }
+                                  } on SocketException catch (_) {
+                                    Fluttertoast.showToast(
+                                        msg: "No internet connection"
+                                    );
+                                    return;
+                                  }
                                   Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) => SignUpPage(tbClient: tbClient)

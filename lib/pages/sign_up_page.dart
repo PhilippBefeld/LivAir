@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -114,8 +115,6 @@ class SignUpPageState extends State<SignUpPage>{
         );
       }
     }on DioError catch(e){
-    print(e.response);
-    print(e.message);
     }
   }
 
@@ -192,13 +191,37 @@ class SignUpPageState extends State<SignUpPage>{
                     padding: const EdgeInsets.all(10),
                     heigth: 60,
                     textInhalt: AppLocalizations.of(context)!.confirm,
-                    onTap: sendConfirmationCode,
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
+                      sendConfirmationCode;
+                    },
                   ),
                   MyButton(
                     padding: const EdgeInsets.all(10),
                     heigth: 60,
                     textInhalt: AppLocalizations.of(context)!.newVerificationCode,
-                    onTap: resendVerificationCode,
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: "No internet connection"
+                        );
+                        return;
+                      }
+                      resendVerificationCode();
+                    },
                   ),
                 ],
               ),
@@ -383,7 +406,19 @@ class SignUpPageState extends State<SignUpPage>{
                           children: [
                             Expanded(
                               child: OutlinedButton(
-                                onPressed: signUp,
+                                onPressed: () async{
+                                  try {
+                                    final result = await InternetAddress.lookup('example.com');
+                                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                                    }
+                                  } on SocketException catch (_) {
+                                    Fluttertoast.showToast(
+                                        msg: "No internet connection"
+                                    );
+                                    return;
+                                  }
+                                  signUp();
+                                },
                                 style: OutlinedButton.styleFrom(
                                     side: const BorderSide(width: 2,color: Color(0xff0099f0)),
                                     foregroundColor: Colors.white,

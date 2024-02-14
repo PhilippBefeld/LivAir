@@ -140,7 +140,9 @@ class WarningsPageState extends State<WarningsPage>{
                     );
                     return;
                   }
-                  getAllDevices;
+                  setState(() {
+                    getAllDevices();
+                  });
                 },
                 style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),side: (const BorderSide(color: Color(0xff0099f0)))),
                 child: Text(AppLocalizations.of(context)!.addWarning,style: const TextStyle(color: Colors.white),),

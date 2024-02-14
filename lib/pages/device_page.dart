@@ -737,6 +737,14 @@ class DevicePageState extends State<DevicePage> {
               foundAccessPoints.addEntries([MapEntry(message.substring(message.indexOf("|")+1,message.indexOf(",",message.indexOf("|")+1)),int.parse(message.substring(0,message.indexOf(","))))]);
               counter++;
               if(counter==foundAccesspointCount){
+                if(foundAccesspointCount ==0){
+                  setState(() {
+                    screenIndex = 0;
+                  });
+                  Fluttertoast.showToast(
+                      msg: "No access points found"
+                  );
+                }
                 setState(() {
                   screenIndex = 11;
                 });

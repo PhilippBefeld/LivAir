@@ -17,7 +17,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
-
 import 'package:location/location.dart';
 
 class DevicePage extends StatefulWidget {

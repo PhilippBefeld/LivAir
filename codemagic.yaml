@@ -4,10 +4,10 @@ workflows:
     integrations:
       app_store_connect: LivAirHome
 
-    environment:
+    # environment:
     # ...
 
-    scripts:
+    # scripts:
     # ...
 
     publishing:

@@ -57,7 +57,6 @@ class NotificationsPageState extends State<NotificationsPage>{
           "endTs": DateTime.now().millisecondsSinceEpoch
         },
       );
-      print(result.data);
       try{
         notifications = result.data["notifications"];
         await getAllDevices();

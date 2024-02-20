@@ -38,6 +38,7 @@ class WarningsPageState extends State<WarningsPage>{
 
   //warnings
   List<dynamic> warnings = [];
+  bool gettingWarnings = false;
 
   //devices and new warnings variables
   List<String> deviceIds = [];
@@ -51,6 +52,8 @@ class WarningsPageState extends State<WarningsPage>{
 
 
   getAllWarnings() async {
+    if(gettingWarnings) return;
+    gettingWarnings = true;
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -61,7 +64,7 @@ class WarningsPageState extends State<WarningsPage>{
       );
       return;
     }
-    warnings = [];
+    warnings.clear();
     unit = await storage.read(key: 'unit');
     final token = tbClient.getJwtToken();
     final dio = Dio();
@@ -80,7 +83,10 @@ class WarningsPageState extends State<WarningsPage>{
     for (var element in data) {
       warnings.add(element);
     }
-    print(response.data);
+    setState(() {
+
+    });
+    gettingWarnings = false;
   }
 
   Widget showWarningsScreen(){

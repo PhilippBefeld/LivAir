@@ -510,7 +510,7 @@ class DevicePageState extends State<DevicePage> {
 
             GooglePlaceAutoCompleteTextField(
               textEditingController: deviceLocationController,
-              googleAPIKey: "AIzaSyDbedbD3jc34d-eYRUw1PC-vT4sPFeBdMQ",
+              googleAPIKey: "AIzaSyAxry8f1YCKcXgQh6LOgCESzckFyryAgXE",
               inputDecoration: InputDecoration(),
               debounceTime: 800, // default 600 ms,
               //countries: ["in","fr"],// optional by default null is set

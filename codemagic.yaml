@@ -43,7 +43,7 @@ workflows:
         # submission (if applicable) when submitting a new build to App Store review.
         # This allows automatically submitting a new build for review if a previous submission exists.
         # Note: This action is performed during post-processing.
-        cancel_previous_submissions: true
+        cancel_previous_submissions: false
 
         # Optional, defaults to MANUAL. Supported values: MANUAL, AFTER_APPROVAL or SCHEDULED
         release_type: MANUAL

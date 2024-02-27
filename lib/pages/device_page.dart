@@ -43,6 +43,7 @@ class DevicePageState extends State<DevicePage> {
   List<Map<String,dynamic>> currentDevices = [];
   List<Map<String,Device2>> currentDevices2 = [];
   List<String> currentRadonValues = [];
+  bool searchedAdditionalDevices = false;
 
   List<DropdownMenuItem<String>> locationsDropdownMenuItems = [const DropdownMenuItem<String>(value: "Wähle einen Standort", child: Text("Wähle einen Standort"))];
   List<DropdownMenuItem<String>> floorsOfLocationDropdownMenuItems = [const DropdownMenuItem<String>(value: "Wähle ein Stockwerk", child: Text("Wähle ein Stockwerk"))];
@@ -73,6 +74,7 @@ class DevicePageState extends State<DevicePage> {
   Future<dynamic> getAllDevices() async{
     if(channel != null) return;
     final token = tbClient.getJwtToken();
+    searchedAdditionalDevices = false;
     var firstTry = true;
     unit = await storage.read(key: 'unit');
     try{
@@ -82,7 +84,7 @@ class DevicePageState extends State<DevicePage> {
         }
       } on SocketException catch (_) {
         Fluttertoast.showToast(
-            msg: "No internet connection"
+            msg: AppLocalizations.of(context)!.noInternetT
         );
         return;
       }
@@ -181,7 +183,7 @@ class DevicePageState extends State<DevicePage> {
           )
       );
       channel!.stream.listen(
-              (data) {
+              (data) async{
                 if(firstTry){
                   logger.d(data);
                   firstTry = false;
@@ -255,7 +257,6 @@ class DevicePageState extends State<DevicePage> {
                   );
                 }
 
-
                 List<dynamic> updateData = [];
                 if(jsonDecode(data)["update"]!=null)updateData = jsonDecode(data)["update"];
                 if(updateData.isNotEmpty){
@@ -304,8 +305,8 @@ class DevicePageState extends State<DevicePage> {
                             element.values.first.update(
                                 lastSync == "0" ? null : int.parse(lastSync),
                                 attributes["location"]["value"],
-                                attributes["floor"]["value"],
-                                attributes["locationId"]["value"],
+                                "",
+                                "",
                                 bool.parse(attributes["isOnline"]["value"]),
                                 newestRadonValue != null ? int.parse(newestRadonValue) : null,
                                 label ?? "",
@@ -320,8 +321,8 @@ class DevicePageState extends State<DevicePage> {
                         deviceId.toString() : Device2(
                             lastSync : int.parse(lastSync),
                             location : attributes["location"]["value"],
-                            floor : attributes["floor"]["value"],
-                            locationId : attributes["locationId"]["value"],
+                            floor : "",
+                            locationId : "",
                             isOnline : bool.parse(attributes["isOnline"]["value"]),
                             radon : int.parse(newestRadonValue),
                             label : label ?? "",
@@ -334,9 +335,58 @@ class DevicePageState extends State<DevicePage> {
                     }
                   }
                   channel!.sink.close();
-                  setState(() {
+                }
+                dio.options.headers['content-Type'] = 'application/json';
+                dio.options.headers['Accept'] = "application/json";
+                dio.options.headers['Authorization'] = "Bearer $token";
+                if(!searchedAdditionalDevices){
+                  searchedAdditionalDevices = true;
+                  try {
+                    var result = await dio.get('https://dashboard.livair.io/api/user/devices',
+                        queryParameters:
+                        {
+                          "pageSize": 1000,
+                          "page": 0
+                        }
+                    );
+                    Map<String,dynamic> map = result.data;
+                    List list = map["data"];
+                    for (var element in list) {
+                      bool found = false;
+                      for( var element2 in currentDevices2){
+                        if(element2.keys.first == element["id"]["id"]){
+                          found = true;
+                        }
+                      }
+                      if(!found){
+                        var result2 = await dio.get('https://dashboard.livair.io/api/plugins/telemetry/DEVICE/${element["id"]["id"]}/values/timeseries',
+                            queryParameters:
+                            {
+                              "keys": "radon"
+                            }
+                        );
+                        print(result2);
+                        currentDevices2.add({
+                          element["id"]["id"].toString() : Device2(
+                            lastSync : 0,
+                            location : "/",
+                            floor : "viewer",
+                            locationId : "/",
+                            isOnline : false,
+                            radon : int.parse(result2.data["radon"].elementAt(0)["value"]),
+                            label : element["label"],
+                            name : element["name"],
+                            deviceAdded: 1,
+                          )
+                        });
+                      }
+                    }
+                    setState(() {
 
-                  });
+                    });
+                  }catch(e){
+                    print(e);
+                  }
                 }
               }
       );
@@ -554,7 +604,7 @@ class DevicePageState extends State<DevicePage> {
                           }
                         } on SocketException catch (_) {
                           Fluttertoast.showToast(
-                              msg: "No internet connection"
+                              msg: AppLocalizations.of(context)!.noInternetT
                           );
                           return;
                         }
@@ -774,7 +824,7 @@ class DevicePageState extends State<DevicePage> {
       }
     } on SocketException catch (_) {
       Fluttertoast.showToast(
-          msg: "No internet connection"
+          msg: AppLocalizations.of(context)!.noInternetT
       );
       return;
     }
@@ -1015,7 +1065,7 @@ class DevicePageState extends State<DevicePage> {
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -1046,13 +1096,13 @@ class DevicePageState extends State<DevicePage> {
                                     }
                                   } on SocketException catch (_) {
                                     Fluttertoast.showToast(
-                                        msg: "No internet connection"
+                                        msg: AppLocalizations.of(context)!.noInternetT
                                     );
                                     return;
                                   }
                                 showDeviceDetails(currentDevices2[index]);
                               },
-                              name: currentDevices2[index].values.elementAt(0).label ?? currentDevices2[index].values.elementAt(0).name,
+                              name: currentDevices2[index].values.elementAt(0).floor == "viewer" ?  "${currentDevices2[index].values.elementAt(0).label} (as Viewer)" : currentDevices2[index].values.elementAt(0).label!,
                               isOnline: currentDevices2[index].values.elementAt(0).isOnline,
                               radonValue: currentDevices2[index].values.elementAt(0).radon.toString(),
                               unit: unit == "Bq/m³" ? "Bq/m³": "pCi/L",

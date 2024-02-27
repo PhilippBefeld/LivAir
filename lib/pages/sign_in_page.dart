@@ -227,7 +227,7 @@ class SignInPageState extends State<SignInPage> {
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -361,7 +361,7 @@ class SignInPageState extends State<SignInPage> {
                                 }
                               } on SocketException catch (_) {
                                 Fluttertoast.showToast(
-                                    msg: "No internet connection"
+                                    msg: AppLocalizations.of(context)!.noInternetT
                                 );
                                 return;
                               }
@@ -553,7 +553,7 @@ class SignInPageState extends State<SignInPage> {
                                     }
                                   } on SocketException catch (_) {
                                     Fluttertoast.showToast(
-                                        msg: "No internet connection"
+                                        msg: AppLocalizations.of(context)!.noInternetT
                                     );
                                     return;
                                   }
@@ -596,7 +596,7 @@ class SignInPageState extends State<SignInPage> {
                                     }
                                   } on SocketException catch (_) {
                                     Fluttertoast.showToast(
-                                        msg: "No internet connection"
+                                        msg: AppLocalizations.of(context)!.noInternetT
                                     );
                                     return;
                                   }
@@ -626,7 +626,7 @@ class SignInPageState extends State<SignInPage> {
                                     }
                                   } on SocketException catch (_) {
                                     Fluttertoast.showToast(
-                                        msg: "No internet connection"
+                                        msg: AppLocalizations.of(context)!.noInternetT
                                     );
                                     return;
                                   }

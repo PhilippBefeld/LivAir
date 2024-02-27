@@ -198,11 +198,11 @@ class SignUpPageState extends State<SignUpPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
-                      sendConfirmationCode;
+                      sendConfirmationCode();
                     },
                   ),
                   MyButton(
@@ -216,7 +216,7 @@ class SignUpPageState extends State<SignUpPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -413,7 +413,7 @@ class SignUpPageState extends State<SignUpPage>{
                                     }
                                   } on SocketException catch (_) {
                                     Fluttertoast.showToast(
-                                        msg: "No internet connection"
+                                        msg: AppLocalizations.of(context)!.noInternetT
                                     );
                                     return;
                                   }

@@ -2,9 +2,6 @@ import 'package:intl/intl.dart';
 
 class MyLineChartData {
 
-  getTitleDates(){
-
-  }
   String convertMsToDateString(int ms,int days){
     String date = "";
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(ms);

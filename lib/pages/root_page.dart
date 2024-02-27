@@ -101,8 +101,8 @@ class _DestinationViewState extends State<DestinationView> {
     return FutureBuilder(
       future: hasDoneOnBoarding(),
       builder: (context,snapshot) {
-        return hasCompletedOnBoarding ? WillPopScope(
-          onWillPop: () async { return false;},
+        return hasCompletedOnBoarding ? PopScope(
+          canPop: false,
           child: Scaffold(
             body: Center(
               child: setPage(_currentIndex),
@@ -179,9 +179,9 @@ class _DestinationViewState extends State<DestinationView> {
                         },
                         style: OutlinedButton.styleFrom(
                             side: null,
-                            foregroundColor: Color(0xff0099f0),
-                            backgroundColor: Color(0xff0099f0),
-                            minimumSize: Size(60,50)
+                            foregroundColor: const Color(0xff0099f0),
+                            backgroundColor: const Color(0xff0099f0),
+                            minimumSize: const Size(60,50)
                         ),
                         child: Text(AppLocalizations.of(context)!.letsGo  ,style: const TextStyle(color: Colors.white),)
                     ),
@@ -475,7 +475,6 @@ class _DestinationViewState extends State<DestinationView> {
                   readCharacteristic = characteristic;
                   subscriptionToDevice = characteristic.lastValueStream.listen((data) async{
                     String message = utf8.decode(data).trim();
-                    print(utf8.decode(data));
                     if(message == 'LOGIN OK'){
                       await writeCharacteristic!.write(utf8.encode('SCAN'));
                     }
@@ -536,7 +535,6 @@ class _DestinationViewState extends State<DestinationView> {
                   btChat!.cancel();
                   btDevice!.disconnect(timeout: 1);
                 }catch(e){
-                  print(e);
                 }
                 setState(() {
                   screenIndex = 2;
@@ -617,7 +615,7 @@ class _DestinationViewState extends State<DestinationView> {
                 });
               },
             ),
-            Text(AppLocalizations.of(context)!.connectToWifiT, style: TextStyle(color: Colors.black),),
+            Text(AppLocalizations.of(context)!.connectToWifiT, style: const TextStyle(color: Colors.black),),
           ],
         ),
       ),
@@ -652,7 +650,6 @@ class _DestinationViewState extends State<DestinationView> {
                 Expanded(
                   child: OutlinedButton(
                       onPressed: () {
-
                         writeCharacteristic!.write(utf8.encode("CONNECT:${foundAccessPoints[selectedWifiAccesspoint]},|${wifiPasswordController.text}"));
                         print("CONNECT:${foundAccessPoints[selectedWifiAccesspoint]},|${wifiPasswordController.text}");
                       },

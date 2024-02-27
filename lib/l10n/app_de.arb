@@ -215,5 +215,6 @@
     "tellUsReason": "Teile uns mit wieso du deinen Account löschen willst",
     "deleteAccountM": "Wenn du deinen Account löschst, wird er sofort deaktiviert. Accounts sind nur dem LivAir Team sichtbar, bis sie endgültig gelöscht sind. Das Löschen findet innerhalb der in den Datenschutzrichtlinien angegebenen Zeitspanne statt.",
     "deleteAccount": "Account löschen",
-    "stillGotDevicesM": "Es ist nicht möglich einen Account zu löschen, solange sich noch Geräte in ihm befinden.\n\nBitte entferne zuerst alle deine Geräte und versuche es erneut."
+    "stillGotDevicesM": "Es ist nicht möglich einen Account zu löschen, solange sich noch Geräte in ihm befinden.\n\nBitte entferne zuerst alle deine Geräte und versuche es erneut.",
+    "noInternetT": "Keine Internetverbindung"
 }

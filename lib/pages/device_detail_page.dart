@@ -627,15 +627,19 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     }
     if(selectedNumberOfDays!=0){
       List<FlSpot> newSpots = [];
+      int areaCount = 24;
       int combinationArea = (Duration(days: selectedNumberOfDays).inMinutes~/24);
-      int j = 1;
+      if(selectedNumberOfDays == 7){
+        areaCount = 7;
+        combinationArea = (Duration(days: selectedNumberOfDays).inMinutes~/7);
+      }
+      int j = 0;
       int k = 0;
       for(int i = Duration(days: selectedNumberOfDays).inMinutes; i >= 0; i-=combinationArea){
-        if(24-k-0.5 < 0)break;
         double avgOfArea = 0.0;
         double sum = 0;
         int spotsInArea = 0;
-        if(j <= spots.length){
+        if(j < spots.length){
           while(spots.elementAt(j).x >= i-combinationArea && spots.elementAt(j).x <= i){
             spotsInArea+=1;
             sum += spots.elementAt(j).y;
@@ -648,15 +652,85 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
         }
         if(spotsInArea > 0){
           avgOfArea = sum/spotsInArea;
-          if(24-k-0.5 > 0) newSpots.add(FlSpot(24-k-0.5, avgOfArea));
+          if(areaCount-k-0.5 > 0) newSpots.add(FlSpot(areaCount-k-0.5, avgOfArea));
         }
         k+=1;
       }
-      return newSpots;
+      //newSpots.add(const FlSpot(0,0));
+      return newSpots.reversed.toList();
     }
-    return spots;
+    return spots.reversed.toList();
   }
 
+  List<BarChartGroupData> getCurrentBars(){
+    List<BarChartGroupData> bars = [];
+    int startTimeseries = requestMsSinceEpoch - (Duration(days: selectedNumberOfDays).inMilliseconds * stepsIntoPast);
+    int sum = 0;
+    radonValuesTimeseries = [];
+    List<FlSpot> spots = [];
+    for (var element in radonHistoryTimestamps) {
+      if(element.item1 >= startTimeseries && element.item1 <= startTimeseries + Duration(days: selectedNumberOfDays).inMilliseconds){
+        sum+=element.item2;
+        radonValuesTimeseries.add(element.item2);
+        spots.add(FlSpot(Duration(milliseconds: (element.item1-startTimeseries)).inMinutes.toDouble(),element.item2.toDouble()));
+      }
+    }
+    List<FlSpot> newSpots = [];
+    int barCount = 30;
+    int combinationArea = (Duration(days: selectedNumberOfDays).inMinutes~/30);
+    if(selectedNumberOfDays == 7){
+      barCount = 7;
+      combinationArea = (Duration(days: selectedNumberOfDays).inMinutes~/7);
+    }
+    int j = 0;
+    int k = 0;
+    for(int i = Duration(days: selectedNumberOfDays).inMinutes; i >= 0; i-=combinationArea){
+      double avgOfArea = 0.0;
+      double sum = 0;
+      int spotsInArea = 0;
+      if(k >= barCount)break;
+      if(j < spots.length){
+        while(spots.elementAt(j).x >= i-combinationArea && spots.elementAt(j).x <= i){
+          spotsInArea+=1;
+          sum += spots.elementAt(j).y;
+          if(j+1 >= spots.length) {
+            j+=2;
+            break;
+          }
+          j+=1;
+        }
+      }
+      if(spotsInArea > 0){
+        avgOfArea = sum/spotsInArea;
+        bars.add(
+            BarChartGroupData(
+              x: barCount - k,
+              barRods: [
+                BarChartRodData(
+                  toY: avgOfArea,
+                  color: avgOfArea > 50 ? avgOfArea > 300 ? Colors.red : Colors.orange : Colors.green,
+                )
+              ]
+            )
+        );
+      }else{
+        bars.add(
+            BarChartGroupData(
+                x: barCount - k,
+                barRods: [
+                  BarChartRodData(
+                    toY: 0,
+                    color: Colors.green,
+                  )
+                ]
+            )
+        );
+      }
+      k+=1;
+    }
+    print(bars.length);
+    return bars.reversed.toList();
+  }
 
   deviceDetailScreen(){
     return Scaffold(
@@ -723,7 +797,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   }
                 } on SocketException catch (_) {
                   Fluttertoast.showToast(
-                      msg: "No internet connection"
+                      msg: AppLocalizations.of(context)!.noInternetT
                   );
                   return;
                 }
@@ -733,7 +807,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                 });
               },
             ),
-            PopupMenuButton(
+            device.values.elementAt(0).floor != "viewer" ? PopupMenuButton(
                 itemBuilder: (context)=>[
                   PopupMenuItem(
                     value: 1,
@@ -745,7 +819,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -764,7 +838,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -783,7 +857,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -802,7 +876,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -821,7 +895,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -840,7 +914,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -859,13 +933,71 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
                       setState(() {
                         deleteDevice();
                       });
+                    },
+                  ),
+                ]
+            ) : PopupMenuButton(
+                itemBuilder: (context)=>[
+                  PopupMenuItem(
+                    value: 1,
+                    child: Text(AppLocalizations.of(context)!.deviceInfo),
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: AppLocalizations.of(context)!.noInternetT
+                        );
+                        return;
+                      }
+                      setState(() {
+                        screenIndex = 3;
+                      });
+                    },
+                  ),
+                  PopupMenuItem(
+                    value: 5,
+                    child: Text(AppLocalizations.of(context)!.exportData),
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: AppLocalizations.of(context)!.noInternetT
+                        );
+                        return;
+                      }
+                      setState(() {
+                        screenIndex = 5;
+                      });
+                    },
+                  ),
+                  PopupMenuItem(
+                    value: 9,
+                    child: Text("Stop viewing"),
+                    onTap: () async{
+                      try {
+                        final result = await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                        }
+                      } on SocketException catch (_) {
+                        Fluttertoast.showToast(
+                            msg: AppLocalizations.of(context)!.noInternetT
+                        );
+                        return;
+                      }
+                      stopViewingDialog();
                     },
                   ),
                 ]
@@ -968,12 +1100,12 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   height: 35,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     children: [
                       Container(
                         height: 20,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                           child: OutlinedButton(
                             onPressed: (){
                               setState((){
@@ -987,7 +1119,6 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                 side: BorderSide(width: 2,color: selectedNumberOfDays == 1 ? const Color(0xff0099F0) : const Color(0xff4f99F0)),
                                 foregroundColor: Colors.black,
                                 backgroundColor: selectedNumberOfDays == 1 ? const Color(0xff0099F0) : Colors.white,
-                                minimumSize: const Size(60,20)
                             ),
                             child: Text(AppLocalizations.of(context)!.last24h,style: TextStyle(
                                 color: selectedNumberOfDays == 1 ? Colors.white : const Color(0xff0099F0)
@@ -998,7 +1129,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       Container(
                         height: 30,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                           child: OutlinedButton(
                             onPressed: (){
                               setState((){
@@ -1023,7 +1154,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       Container(
                         height: 30,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                           child: OutlinedButton(
                             onPressed: ()=>{
                               setState((){
@@ -1048,7 +1179,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       Container(
                         height: 30,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                           child: OutlinedButton(
                             onPressed: ()=>{
                               setState((){
@@ -1072,28 +1203,25 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       ),
                       Container(
                         height: 30,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                          child: OutlinedButton(
-                            onPressed: ()=>{
-                              setState((){
-                                selectedNumberOfDays = 0;
-                              })
-                            },
-                            style: OutlinedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)
-                                ),
-                                side: BorderSide(width: 2,color: selectedNumberOfDays == 0 ? const Color(0xff0099F0) : const Color(0xff4f99F0)),
-                                foregroundColor: Colors.black,
-                                backgroundColor: selectedNumberOfDays == 0 ? const Color(0xff0099F0) : Colors.white,
-                                minimumSize: const Size(60,20)
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.completeHistory,
-                              style: TextStyle(
-                                  color: selectedNumberOfDays == 0 ? Colors.white : const Color(0xff0099F0)
+                        child: OutlinedButton(
+                          onPressed: ()=>{
+                            setState((){
+                              selectedNumberOfDays = 0;
+                            })
+                          },
+                          style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)
                               ),
+                              side: BorderSide(width: 2,color: selectedNumberOfDays == 0 ? const Color(0xff0099F0) : const Color(0xff4f99F0)),
+                              foregroundColor: Colors.black,
+                              backgroundColor: selectedNumberOfDays == 0 ? const Color(0xff0099F0) : Colors.white,
+                              minimumSize: const Size(60,20)
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)!.completeHistory,
+                            style: TextStyle(
+                                color: selectedNumberOfDays == 0 ? Colors.white : const Color(0xff0099F0)
                             ),
                           ),
                         ),
@@ -1128,8 +1256,70 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           aspectRatio:0.8,
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                            child: LineChart(
-                              LineChartData(
+                            child: (selectedNumberOfDays == 7) || (selectedNumberOfDays == 30) ?
+                            BarChart(
+                                BarChartData(
+                                  barTouchData: BarTouchData(
+                                    enabled: true,
+                                    touchTooltipData: BarTouchTooltipData(
+                                      tooltipBgColor: Colors.white,
+                                      tooltipPadding: const EdgeInsets.all(1),
+                                      tooltipMargin: 1,
+                                      getTooltipItem: (
+                                          BarChartGroupData group,
+                                          int groupIndex,
+                                          BarChartRodData rod,
+                                          int rodIndex,
+                                      ){
+                                        return BarTooltipItem(
+                                            barChartSpotString(groupIndex+1, rod.toY),
+                                            TextStyle(
+                                            color: rod.toY > 50 ? rod.toY > 300 ? Colors.red : Colors.orange : Colors.green,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                        ));
+                                      }
+                                    )
+                                  ),
+                                  titlesData: FlTitlesData(
+                                      show: true,
+                                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                      bottomTitles: AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          getTitlesWidget: (value, meta) {
+                                            return bottomTitleWidgets(value, meta);
+                                          },
+                                          reservedSize: 56,
+                                        ),
+                                        drawBelowEverything: true,
+                                      ),
+                                      leftTitles: const AxisTitles(
+                                        sideTitles: SideTitles(
+                                            showTitles: true,
+                                            reservedSize: 50
+                                        ),
+                                      )
+                                  ),
+                                  gridData: FlGridData(
+                                      show: true,
+                                      getDrawingVerticalLine: (value){
+                                        return const FlLine(
+                                            color: Color(0x00eceff1),
+                                            strokeWidth: 1
+                                        );
+                                      }
+                                  ),
+                                  alignment: BarChartAlignment.spaceAround,
+                                  maxY: (currentMaxValue/100.0).ceil()*100.0,
+                                  barGroups: getCurrentBars(),
+                                  borderData: FlBorderData(
+                                      show: false
+                                  ),
+                                )
+                            ) : LineChart(
+                                LineChartData(
                                   maxX: selectedNumberOfDays == 0 ? (Duration(milliseconds: requestMsSinceEpoch - radonHistoryTimestamps.last.item1).inMinutes).toDouble() : 24,
                                   maxY: (currentMaxValue/100.0).ceil()*100.0,
                                   gridData: FlGridData(
@@ -1143,6 +1333,13 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                   ),
                                   lineBarsData: [
                                     LineChartBarData(
+                                      spots: [const FlSpot(0, 0)],
+                                      dotData: const FlDotData(
+                                          show: false
+                                      ),
+                                    ),
+                                    LineChartBarData(
+                                      color: const Color(0xff0099F0),
                                       spots: getCurrentSpots(),
                                       isCurved: true,
                                       curveSmoothness: 0.1,
@@ -1175,7 +1372,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                               : currentMaxValue>50 ?[0, 50<currentMaxValue ? 45.0/currentMaxValue : 1.0, 50<currentMaxValue ? 55.0/currentMaxValue : 1.0, 300<currentMaxValue ? 295/currentMaxValue : 1.0]
                                               :[0, 50<currentMaxValue ? 45.0/currentMaxValue : 1.0]
                                       ),*/
-                                    ),
+                                    )
                                   ],
                                   lineTouchData: LineTouchData(
                                     enabled: true,
@@ -1189,13 +1386,18 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                           ),
                                           FlDotData(
                                             show: true,
-                                            getDotPainter: (spot, percent, barData, index) =>
-                                                FlDotCirclePainter(
-                                                  radius: 8,
-                                                  color: spot.y > 50 ? spot.y > 300 ? Colors.red : Colors.orange : Colors.green,
-                                                  strokeWidth: 2,
-                                                  strokeColor: Colors.black,
-                                                ),
+                                            getDotPainter: (spot, percent, barData, index) {
+                                              return spot.y != 0 && spot.x != 0 ? FlDotCirclePainter(
+                                                radius: 8,
+                                                color: spot.y > 50 ? spot.y >
+                                                    300 ? Colors.red : Colors
+                                                    .orange : Colors.green,
+                                                strokeWidth: 2,
+                                                strokeColor: Colors.black,
+                                              ) : FlDotCirclePainter(
+                                                radius: 0
+                                              );
+                                            }
                                           ),
                                         );
                                       }).toList();
@@ -1205,6 +1407,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                       tooltipBgColor: Colors.white,
                                       tooltipBorder: const BorderSide(color: Colors.black),
                                       getTooltipItems: (touchedSpots) {
+                                        if(touchedSpots.first.x == 0 || touchedSpots.first.x == (selectedNumberOfDays == 0 ? (Duration(milliseconds: requestMsSinceEpoch - radonHistoryTimestamps.last.item1).inMinutes).toDouble() : 24))return [];
                                         return touchedWidgets(touchedSpots);
                                       },
                                     ),
@@ -1217,10 +1420,12 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                     bottomTitles: AxisTitles(
                                       sideTitles: SideTitles(
                                         showTitles: true,
-                                        getTitlesWidget: (value, meta) =>
-                                            bottomTitleWidgets(value, meta),
+                                        getTitlesWidget: (value, meta) {
+                                          return bottomTitleWidgets(value, meta);
+                                        },
                                         reservedSize: 56,
-                                        interval: selectedNumberOfDays == 0 ? (Duration(milliseconds: requestMsSinceEpoch - radonHistoryTimestamps.last.item1).inMinutes).toDouble()/4 : 6,
+                                        interval: selectedNumberOfDays == 0 ? (Duration(milliseconds: requestMsSinceEpoch - radonHistoryTimestamps.last.item1).inMinutes).toDouble()/4
+                                            : selectedNumberOfDays == 7 ? 1 : 6
                                       ),
                                       drawBelowEverything: true,
                                     ),
@@ -1243,6 +1448,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                       ]
                                   )
                               ),
+                              curve: Curves.ease
                             ),
                           ),
                         ),
@@ -1267,6 +1473,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
 
 
   bottomTitleWidgets(double value, TitleMeta meta){
+    if(!(value.toInt() == 1 || value.toInt() == 30 || value.toInt() == 10 || value.toInt() == 20) && selectedNumberOfDays == 30) return SideTitleWidget(child: Text(""), axisSide: meta.axisSide);
     const style = TextStyle(
       color: Colors.black,
       fontWeight: FontWeight.w400,
@@ -1297,14 +1504,14 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
       return SideTitleWidget(
         axisSide: meta.axisSide,
         space: 16,
-        child: Text(MyLineChartData().convertMsToDateString(requestMsSinceEpoch-((Duration(days: selectedNumberOfDays).inMilliseconds)-(value*7)*3600000).toInt(), selectedNumberOfDays) , style: style, textAlign:  TextAlign.center,),
+        child: Text(MyLineChartData().convertMsToDateString(requestMsSinceEpoch-((Duration(days: selectedNumberOfDays).inMilliseconds)-(value*24)*3600000).toInt(), selectedNumberOfDays) , style: style, textAlign:  TextAlign.center,),
       );
     }
     if(selectedNumberOfDays == 30){
       return SideTitleWidget(
         axisSide: meta.axisSide,
         space: 16,
-        child: Text(MyLineChartData().convertMsToDateString(requestMsSinceEpoch-((Duration(days: selectedNumberOfDays).inMilliseconds)-(value*30)*3600000).toInt(), selectedNumberOfDays) , style: style, textAlign:  TextAlign.center,),
+        child: Text(MyLineChartData().convertMsToDateString(requestMsSinceEpoch-((Duration(days: selectedNumberOfDays).inMilliseconds)-(value*24)*3600000).toInt(), selectedNumberOfDays) , style: style, textAlign:  TextAlign.center,),
       );
     }
     return SideTitleWidget(
@@ -1341,7 +1548,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
       }
       if(selectedNumberOfDays == 7){
         return LineTooltipItem(
-          '${MyLineChartData().convertMsToDateString((requestMsSinceEpoch-((24-touchedSpot.x)*7*3600000)).toInt(), selectedNumberOfDays)}, ${touchedSpot.y.toStringAsFixed(2)} ${unit == "Bq/m³" ? "Bq/m³": "pCi/L"}',
+          '${MyLineChartData().convertMsToDateString((requestMsSinceEpoch-((7-touchedSpot.x-0.5)*24*3600000)).toInt(), selectedNumberOfDays)}, ${touchedSpot.y.toStringAsFixed(2)} ${unit == "Bq/m³" ? "Bq/m³": "pCi/L"}',
           textStyle,
         );
       }
@@ -1357,6 +1564,13 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
       );
     }).toList();
     return list;
+  }
+
+  String barChartSpotString (int touchedBar, double touchedBarValue){
+    if(selectedNumberOfDays == 7){
+      return '${MyLineChartData().convertMsToDateString((requestMsSinceEpoch-((7-touchedBar)*24*3600000)).toInt(), selectedNumberOfDays)}, ${touchedBarValue.toInt()} ${unit == "Bq/m³" ? "Bq/m³": "pCi/L"}';
+    }
+    return '${MyLineChartData().convertMsToDateString((requestMsSinceEpoch-((30-touchedBar)*24*3600000)).toInt(), selectedNumberOfDays)}, ${touchedBarValue.toInt()} ${unit == "Bq/m³" ? "Bq/m³": "pCi/L"}';
   }
 
   deviceSettingsScreen(){
@@ -1702,11 +1916,12 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           }
                         } on SocketException catch (_) {
                           Fluttertoast.showToast(
-                              msg: "No internet connection"
+                              msg: AppLocalizations.of(context)!.noInternetT
                           );
                           return;
                         }
                         displayType(0);
+                        d_unit=0;
                       },
                       style: OutlinedButton.styleFrom(backgroundColor: d_unit == 0 ?  Colors.white : const Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
                       child: Row(
@@ -1728,11 +1943,12 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           }
                         } on SocketException catch (_) {
                           Fluttertoast.showToast(
-                              msg: "No internet connection"
+                              msg: AppLocalizations.of(context)!.noInternetT
                           );
                           return;
                         }
                         displayType(1);
+                        d_unit=1;
                       },
                       style: OutlinedButton.styleFrom(backgroundColor: d_unit == 1 ?  Colors.white : const Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
                       child: Row(
@@ -1743,7 +1959,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       )
                   ),
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 SizedBox(
                   width: 100,
                   child: OutlinedButton(
@@ -1754,17 +1970,18 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           }
                         } on SocketException catch (_) {
                           Fluttertoast.showToast(
-                              msg: "No internet connection"
+                              msg: AppLocalizations.of(context)!.noInternetT
                           );
                           return;
                         }
                         displayType(2);
+                        d_unit=2;
                       },
-                      style: OutlinedButton.styleFrom(backgroundColor: d_unit == 1 ?  Colors.white : Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
+                      style: OutlinedButton.styleFrom(backgroundColor: d_unit == 1 ?  Colors.white : const Color(0xff0099F0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(AppLocalizations.of(context)!.changing, style: TextStyle(color: d_unit == 1 ?  Color(0xff0099F0) : Colors.white),),
+                          Text(AppLocalizations.of(context)!.changing, style: TextStyle(color: d_unit == 1 ?  const Color(0xff0099F0) : Colors.white),),
                         ],
                       )
                   ),
@@ -1977,7 +2194,6 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                   child: OutlinedButton(
                       onPressed: () {
                         writeCharacteristic!.write(utf8.encode("CONNECT:${foundAccessPoints[selectedWifiAccesspoint]},|${wifiPasswordController.text}"));
-                        print("CONNECT:${foundAccessPoints[selectedWifiAccesspoint]},|${wifiPasswordController.text}");
                       },
                       style: OutlinedButton.styleFrom(
                           side: const BorderSide(width: 0),
@@ -2002,8 +2218,8 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     foundAccessPoints = {};
 
     showDialog(context: context, builder: (context){
-      return WillPopScope(
-        onWillPop: () async{ return false; },
+      return PopScope(
+        canPop: false,
         child: Scaffold(
           body: Center(
               child:Column(
@@ -2275,7 +2491,6 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                     isLatLngRequired:true,// if you required coordinates from place detail
                     getPlaceDetailWithLatLng: (Prediction prediction) {
                       // this method will return latlng with place detail
-                      print("placeDetails" + prediction.lng.toString());
                     }, // this callback is called when isLatLngRequired is true
                     itemClick: (Prediction prediction) {
                       deviceLocationController.text = prediction.description!;
@@ -2291,13 +2506,13 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                             const SizedBox(
                               width: 7,
                             ),
-                            Expanded(child: Text("${prediction.description??""}"))
+                            Expanded(child: Text(prediction.description??""))
                           ],
                         ),
                       );
                     },
                     // if you want to add seperator between list items
-                    seperatedBuilder: Divider(),
+                    seperatedBuilder: const Divider(),
                     // want to show close icon
                     isCrossBtnShown: true,
                   ),
@@ -2315,7 +2530,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           }
                         } on SocketException catch (_) {
                           Fluttertoast.showToast(
-                              msg: "No internet connection"
+                              msg: AppLocalizations.of(context)!.noInternetT
                           );
                           return;
                         }
@@ -2338,7 +2553,6 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     dio.options.headers['content-Type'] = 'application/json';
     dio.options.headers['Accept'] = "application/json";
     dio.options.headers['Authorization'] = "Bearer $token";
-    var result;
     try{
     }catch(e){
       setState(() {
@@ -2518,13 +2732,13 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                             }
                           } on SocketException catch (_) {
                             Fluttertoast.showToast(
-                                msg: "No internet connection"
+                                msg: AppLocalizations.of(context)!.noInternetT
                             );
                             return;
                           }
                           exportData();
                         },
-                        style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: Size(100, 50)),
+                        style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                         child: Text(AppLocalizations.of(context)!.export,style: const TextStyle(color: Colors.white)),
                       ),
                     ),
@@ -2596,9 +2810,8 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     dio.options.headers['content-Type'] = 'application/json';
     dio.options.headers['Accept'] = "application/json";
     dio.options.headers['Authorization'] = "Bearer $token";
-    var result;
     try{
-      result = await dio.post('https://dashboard.livair.io/api/livAir/renameDevice/${device.keys.first}/${renameController.text}',);
+      await dio.post('https://dashboard.livair.io/api/livAir/renameDevice/${device.keys.first}/${renameController.text}',);
     }catch(e){
       setState(() {
         Navigator.pop(context);
@@ -2626,7 +2839,6 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
-            keyboardType: TextInputType.number,
             controller: renameController,
             decoration: InputDecoration(
               enabledBorder: const OutlineInputBorder(
@@ -2654,7 +2866,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       }
                     } on SocketException catch (_) {
                       Fluttertoast.showToast(
-                          msg: "No internet connection"
+                          msg: AppLocalizations.of(context)!.noInternetT
                       );
                       return;
                     }
@@ -2721,7 +2933,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       }
                     } on SocketException catch (_) {
                       Fluttertoast.showToast(
-                          msg: "No internet connection"
+                          msg: AppLocalizations.of(context)!.noInternetT
                       );
                       return;
                     }
@@ -2756,7 +2968,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -2821,7 +3033,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                                         }
                                       } on SocketException catch (_) {
                                         Fluttertoast.showToast(
-                                            msg: "No internet connection"
+                                            msg: AppLocalizations.of(context)!.noInternetT
                                         );
                                         return;
                                       }
@@ -2918,7 +3130,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           }
                         } on SocketException catch (_) {
                           Fluttertoast.showToast(
-                              msg: "No internet connection"
+                              msg: AppLocalizations.of(context)!.noInternetT
                           );
                           return;
                         }
@@ -2943,9 +3155,8 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     dio.options.headers['content-Type'] = 'application/json';
     dio.options.headers['Accept'] = "application/json";
     dio.options.headers['Authorization'] = "Bearer $token";
-    var response;
     try{
-      response = await dio.post(
+      await dio.post(
           'https://dashboard.livair.io/api/livAir/share',
         data: jsonEncode(
             {
@@ -2967,9 +3178,9 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     dio.options.headers['content-Type'] = 'application/json';
     dio.options.headers['Accept'] = "application/json";
     dio.options.headers['Authorization'] = "Bearer $token";
-    var response;
+    Response response;
     try{
-      response = await dio. get(
+      response = await dio.get(
           'https://dashboard.livair.io/api/livAir/viewers/${device.keys.elementAt(0)}',
       );
       viewerData = response.data;
@@ -3000,11 +3211,12 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                       }
                     } on SocketException catch (_) {
                       Fluttertoast.showToast(
-                          msg: "No internet connection"
+                          msg: AppLocalizations.of(context)!.noInternetT
                       );
                       return;
                     }
                     removeViewer();
+                    Navigator.pop(context);
                   },
                   style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50)),
                   child: Text(AppLocalizations.of(context)!.removeUser,style: const TextStyle(color: Colors.white)),
@@ -3042,7 +3254,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
     dio.options.headers['content-Type'] = 'application/json';
     dio.options.headers['Accept'] = "application/json";
     dio.options.headers['Authorization'] = "Bearer $token";
-    var response;
+    Response response;
     try{
       response = await dio.delete(
         'https://dashboard.livair.io/api/livAir/unshare',
@@ -3189,7 +3401,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                           }
                         } on SocketException catch (_) {
                           Fluttertoast.showToast(
-                              msg: "No internet connection"
+                              msg: AppLocalizations.of(context)!.noInternetT
                           );
                           return;
                         }
@@ -3351,7 +3563,7 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
                         }
                       } on SocketException catch (_) {
                         Fluttertoast.showToast(
-                            msg: "No internet connection"
+                            msg: AppLocalizations.of(context)!.noInternetT
                         );
                         return;
                       }
@@ -3385,6 +3597,80 @@ class DeviceDetailPageState extends State<DeviceDetailPage>{
               ),
             ],
           )
+        ],
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return alert;
+      },
+    );
+  }
+
+  stopViewingDialog() async{
+    AlertDialog alert = AlertDialog(
+      title: Text("Stop viewing?", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text("Do you really want to stop viewing this device? You will only be able to see the device again, if the owner shares it again."),
+          const SizedBox(height: 30,),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () async{
+                    try {
+                      final result = await InternetAddress.lookup('example.com');
+                      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      }
+                    } on SocketException catch (_) {
+                      Fluttertoast.showToast(
+                          msg: AppLocalizations.of(context)!.noInternetT
+                      );
+                      return;
+                    }
+                    try{
+                      var token = tbClient.getJwtToken();
+                      dio.options.headers['content-Type'] = 'application/json';
+                      dio.options.headers['Accept'] = "application/json";
+                      dio.options.headers['Authorization'] = "Bearer $token";
+                      await dio.delete("https://dashboard.livair.io/api/livAir/stopViewing",
+                          data:
+                          {
+                            "deviceIds": [device.keys.first]
+                          }
+                      );
+                    }on DioError catch(e){
+                      logger.d(e.response);
+                    }
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    setState(() {
+
+                    });
+                  },
+                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xff0099f0),minimumSize: const Size(100, 50),side: BorderSide(color: Color(0xff0099f0))),
+                  child: Text("Stop viewing",style: const TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10,),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                  style: OutlinedButton.styleFrom(backgroundColor: Colors.white,minimumSize: const Size(100, 50),side: BorderSide(color: Color(0xff0099f0))),
+                  child: Text(AppLocalizations.of(context)!.cancel,style: const TextStyle(color: Color(0xff0099f0))),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

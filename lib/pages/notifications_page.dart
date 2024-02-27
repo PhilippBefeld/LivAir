@@ -205,7 +205,7 @@ class NotificationsPageState extends State<NotificationsPage>{
                                       }
                                     } on SocketException catch (_) {
                                       Fluttertoast.showToast(
-                                          msg: "No internet connection"
+                                          msg: AppLocalizations.of(context)!.noInternetT
                                       );
                                       return;
                                     }
@@ -316,21 +316,22 @@ class NotificationsPageState extends State<NotificationsPage>{
   }
 
   deleteNotifications() async {
-    final token = tbClient.getJwtToken();
+    var token = tbClient.getJwtToken();
+    var userId = tbClient.getAuthUser()?.userId;
     dio.options.headers['content-Type'] = 'application/json';
     dio.options.headers['Accept'] = "application/json";
     dio.options.headers['Authorization'] = "Bearer $token";
     try{
-      var result = await dio.put("https://dashboard.livair.io/api/notifications/read");
-      print(result.statusCode);
-      await Future<void>.delayed( const Duration(milliseconds: 100));
-      notificationsLoaded = true;
-      setState(() {
-        selectedNotifications.clear();
-      });
-      await Future<void>.delayed( const Duration(seconds: 1));
-      notificationsLoaded = false;
-    }catch(e){
+      var result = await dio.delete('https://dashboard.livair.io/api/plugins/telemetry/USER/$userId/timeseries/delete',
+        queryParameters: {
+          "keys": "notifications",
+          "startTs": 0,
+          "endTs": DateTime.now().millisecondsSinceEpoch,
+        },
+      );
+    }on DioError catch(e){
+      print(e.response);
+    }on Error catch(e){
       print(e);
     }
   }
